@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-EvaluationApplication<evaluation>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "mainClass": "com.yae.evaluation.EvaluationApplication",
+            "projectName": "evaluation",
+            "args": ""
+        }
+    ]
+}

@@ -1,2 +1,1 @@
 # YetAnotherEdmodo
-OOAD project
