@@ -1,14 +1,43 @@
 {
-    "configurations": [
+  "configurations": [
+    {
+      "type": "java",
+      "name": "Launch App",
+      "request": "launch",
+      "mainClass": "com.yae.App"
+    },
+    {
+      "type": "java",
+      "name": "Spring Boot-EvaluationApplication<evaluation>",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "console": "internalConsole",
+      "mainClass": "com.yae.evaluation.EvaluationApplication",
+      "projectName": "evaluation",
+      "args": ""
+    },
+    {
+      "name": "C/C++ Runner: Debug Session",
+      "type": "cppdbg",
+      "request": "launch",
+      "args": [
+        ""
+      ],
+      "stopAtEntry": false,
+      "cwd": "/home/suvigya/Code/Java/YetAnotherEdmodo/frontend",
+      "environment": [],
+      "program": "/home/suvigya/Code/Java/YetAnotherEdmodo/frontend/build/Debug/outDebug",
+      "internalConsoleOptions": "openOnSessionStart",
+      "MIMode": "gdb",
+      "miDebuggerPath": "gdb",
+      "externalConsole": false,
+      "setupCommands": [
         {
-            "type": "java",
-            "name": "Spring Boot-EvaluationApplication<evaluation>",
-            "request": "launch",
-            "cwd": "${workspaceFolder}",
-            "console": "internalConsole",
-            "mainClass": "com.yae.evaluation.EvaluationApplication",
-            "projectName": "evaluation",
-            "args": ""
+          "description": "Enable pretty-printing for gdb",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
         }
-    ]
+      ]
+    }
+  ]
 }

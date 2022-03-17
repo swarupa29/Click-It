@@ -1,56 +1,36 @@
 package com.yae;
 
-import java.net.http.HttpClient;
-import java.net.http.HttpResponse;
+import picocli.CommandLine;
+import picocli.CommandLine.Option;
+import picocli.CommandLine.Parameters;
 
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
-import org.apache.http.HttpEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.mime.MultipartEntityBuilder;
-import org.apache.http.entity.mime.content.FileBody;
-
-public class App{
-    public static void main(String[] args) throws ParseException {
-        Option submission_upload  = Option.builder("submission upload")
-                                .argName("f")
-                                .hasArg(true)
-                                .desc("Upload submission files of an assignment ")
-                                .build();
-                                
-        Options options = new Options();
-        options.addOption(submission_upload);
-        CommandLineParser parser = new DefaultParser();
-        try {
-            // parse the command line arguments
-            CommandLine line = parser.parse(options, args);
-            if (line.hasOption("file"))
-            {
-                String url="http://127.0.0.1:5000/upload";
-                String file = line.getOptionValue("buildfile");
-                HttpEntity entity = MultipartEntityBuilder.create()
-                .addPart("file", new FileBody(file))
-                .build();
-
-                HttpPost request = new HttpPost(url);
-                request.setEntity(entity);
-
-                HttpClient client = HttpClientBuilder.create().build();
-                HttpResponse response = client.execute(request);
+/**
+ * Hello world!
+ *
+ */
 
 
-            }
-        }
-        catch (ParseException exp) {
-            // oops, something went wrong
-            System.err.println("Parsing failed.  Reason: " + exp.getMessage());
-        }
+public class App implements Runnable
+{
+    
+    @Parameters(paramLabel = "<service-name>", description = "The name of the service to which you want the request to be sent")
+    private String serviceName;
+    
+    @Parameters(paramLabel = "<action>", description = "Action to be performed")
+    private String actionName;
 
-
-
+    
+    @Override
+    public void run() { 
+        // The business logic of the command goes here...
+        // In this case, code for generation of ASCII art graphics
+        // (omitted for the sake of brevity).
+        System.out.println("Here!");
     }
+
+    public static void main(String[] args) {
+        int exitCode = new CommandLine(new App()).execute(args); 
+        System.exit(exitCode); 
+    }
+
 }

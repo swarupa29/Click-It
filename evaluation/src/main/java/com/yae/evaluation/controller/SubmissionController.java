@@ -1,5 +1,7 @@
 package com.yae.evaluation.controller;
 
+import com.yae.evaluation.RESTTemplates.SubmissionTemplate;
+import com.yae.evaluation.RESTTemplates.UploadTemplate;
 import com.yae.evaluation.entity.Submission;
 import com.yae.evaluation.service.SubmissionService;
 
@@ -27,13 +29,19 @@ public class SubmissionController {
     }
 
     @PostMapping("save")
-    Submission saveSubmission(@RequestBody Submission s){
+    Submission saveSubmission(@RequestBody SubmissionTemplate s){
         return submissionService.saveSubmission(s);
     } 
 
-    @PostMapping(value="upload")
-    public ResponseEntity uploadSubmission(@RequestParam MultipartFile file) {
-        return submissionService.uploadSubmission(file);
+    @PostMapping("upload")
+    public ResponseEntity<String> uploadSubmission(
+        @RequestParam("studentId") String studentId,
+        @RequestParam("file") MultipartFile file,
+        @RequestParam("assignmentId") String assignmentId
+    ) {
+        UploadTemplate uploadTemplate = new UploadTemplate(studentId, assignmentId, file);
+        return submissionService.uploadSubmission(uploadTemplate);
     }
-    
 }
+
+// MULTIPART FORM IS ALREADY A FORM AND CAN HAVE MULTIPLE FIELDS!

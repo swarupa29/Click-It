@@ -1,16 +1,16 @@
 package com.yae.evaluation.service;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Date;
 
-import javax.swing.filechooser.FileView;
-
+import com.yae.evaluation.RESTTemplates.SubmissionTemplate;
+import com.yae.evaluation.RESTTemplates.UploadTemplate;
 import com.yae.evaluation.entity.Submission;
 import com.yae.evaluation.repository.SubmissionRepository;
+import com.yae.evaluation.utils.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -22,8 +22,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @Service
 public class SubmissionService {
-    private String USER= System.getProperty("user.name");
-    private final String  FILE_BASE_PATH="/home/"+USER+"/yae";
 
     @Autowired
     private SubmissionRepository submissionRepository;
@@ -32,35 +30,57 @@ public class SubmissionService {
         return submissionRepository.findSubmissionById(id);
     }
 
-    public Submission saveSubmission(Submission s) {
-        return submissionRepository.save(s);
+    public Submission saveSubmission(SubmissionTemplate s){
+        
+        String assignmnentId = s.getAssignmnentId();
+        String studentId = s.getStudentId();
+        String fileName = s.getFileName();
+        Date submittedOn = new Date();
+
+        try {
+            Path filePath = Path.of(FileUtils.getSubmissionFilePath(studentId, s.getAssignmnentId(), fileName));          
+            Path tempPath = Path.of(FileUtils.getTempFilePath(studentId, fileName));
+            Files.createDirectories(filePath.getParent());
+            Files.move(tempPath, filePath, StandardCopyOption.REPLACE_EXISTING);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+        
+        Submission submission = new Submission();
+        submission.setAssignmnentId(assignmnentId);
+        submission.setFileName(fileName);
+        submission.setStudentId(studentId);
+        submission.setSubmittedOn(submittedOn);
+        return submissionRepository.save(submission);
     }
 
-    public ResponseEntity uploadSubmission(MultipartFile file) {
+    public ResponseEntity<String> uploadSubmission(UploadTemplate upload) {
 
         
-
+        MultipartFile file = upload.getFile();
         String filename = StringUtils.cleanPath(file.getOriginalFilename());
-
-        // path where uploaded file will be stored
-        Path path = Paths.get(FILE_BASE_PATH, filename);
-        File f = new File(FILE_BASE_PATH);
-        f.mkdirs();
-
-        // copies file to the path, replacing if same named file exists. TODO: Versioning  
+        Path tempFilePath ;
         try {
-            Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+           tempFilePath = Path.of(FileUtils.getTempFilePath(upload.getStudentId(), filename)); 
+        } 
+        catch (IOException exception) {
+            exception.printStackTrace();
+            return ResponseEntity.badRequest().body("Failed to upload file");
+        }
+
+        try {
+            Files.copy(file.getInputStream(), tempFilePath, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException exception) {
             exception.printStackTrace();
         }
 
-        // returns a uri for the user to download the file they uploaded (for confirmation)
-        // NOTE: the path needs to have a controller which enables users to download file.
         String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-            .path("/files/downloads/")
-            .path(filename)
-            .toUriString();
-        
+        .path("/files/downloads/")
+        .path(tempFilePath.toString())
+        .toUriString();
+    
         return ResponseEntity.ok(fileDownloadUri);
     }
     
