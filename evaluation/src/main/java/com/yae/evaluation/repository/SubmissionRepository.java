@@ -6,6 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface SubmissionRepository extends JpaRepository<Submission, String> {
-    Submission findSubmissionById(String id);
+public interface SubmissionRepository extends JpaRepository<Submission, Long> {
+    Submission findSubmissionById(Long id);
 }

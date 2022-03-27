@@ -1,47 +1,50 @@
 package com.yae.evaluation.controller;
 
-import com.yae.evaluation.RESTTemplates.SubmissionTemplate;
-import com.yae.evaluation.RESTTemplates.UploadTemplate;
 import com.yae.evaluation.entity.Submission;
 import com.yae.evaluation.service.SubmissionService;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-@RestController
-@RequestMapping("/")
+@Controller
 public class SubmissionController {
 
     @Autowired
     SubmissionService submissionService;
 
-    @GetMapping("{id}")
-    Submission getSubmission(@PathVariable String id) {
+    @GetMapping(value="/")
+    String home(Model model){
+        return "index";
+    }
+ 
+    @GetMapping(value="/{id}")
+    @ResponseBody
+    Submission getSubmission(@PathVariable Long id) {
         return submissionService.findSubmissionById(id);
     }
 
-    @PostMapping("save")
-    Submission saveSubmission(@RequestBody SubmissionTemplate s){
-        return submissionService.saveSubmission(s);
-    } 
-
-    @PostMapping("upload")
-    public ResponseEntity<String> uploadSubmission(
-        @RequestParam("studentId") String studentId,
+    @PostMapping(value="/submit", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    String saveSubmission(
+        @RequestParam("name") String name,
+        @RequestParam("srn") String srn,
         @RequestParam("file") MultipartFile file,
-        @RequestParam("assignmentId") String assignmentId
-    ) {
-        UploadTemplate uploadTemplate = new UploadTemplate(studentId, assignmentId, file);
-        return submissionService.uploadSubmission(uploadTemplate);
-    }
+        Model model)
+    {    
+        String output = submissionService.saveSubmission(name, srn, file);
+
+        model.addAttribute("result", output);
+        model.addAttribute("submissionStatus", "SUCCESS");
+        System.out.println("HERE!");
+        return "index";
+    } 
 }
 
 // MULTIPART FORM IS ALREADY A FORM AND CAN HAVE MULTIPLE FIELDS!

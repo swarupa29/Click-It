@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class UploadTemplate {
-    String studentId;
-    String assignmentId;
+    Long studentId;
+    Long assignmentId;
     MultipartFile file;
 }

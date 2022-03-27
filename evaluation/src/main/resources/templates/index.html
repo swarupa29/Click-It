@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+
+<html xmlns="https://www.thymeleaf.org">
+	<head>
+		<meta charset="UTF-8">
+		<title>Spring MVC Assignment</title>
+	</head>
+	<body>
+		<h1>OOAD Assignment 1 - PES1UG19CS529 [Assignment Submission Portal]</h1>
+		
+		<form action="submit" method="post" enctype="multipart/form-data">
+			<label for="name">Name </label>
+			<input type="text" name="name" id="name"/>
+	
+			<label for="srn">SRN </label>
+			<input type="text" name="srn" id="srn"/>
+		
+			<label for="file">File </label>
+			<input type="file" name="file" id="file"/>
+		
+			<input type="submit" name="submit" value="Submit"/>
+		</form>
+		
+		<span style="white-space: pre-line" ><p th:text="${submissionStatus}"></p></span>
+		<span style="white-space: pre-line" >	<p th:text="${result}"></p></span>
+		
+	
+		
+	</body>
+</html>

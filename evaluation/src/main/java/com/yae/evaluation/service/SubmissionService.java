@@ -1,16 +1,17 @@
 package com.yae.evaluation.service;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.util.Date;
 
-import com.yae.evaluation.RESTTemplates.SubmissionTemplate;
 import com.yae.evaluation.RESTTemplates.UploadTemplate;
 import com.yae.evaluation.entity.Submission;
 import com.yae.evaluation.repository.SubmissionRepository;
-import com.yae.evaluation.utils.*;
+import com.yae.evaluation.utils.FileUtils;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -26,34 +27,49 @@ public class SubmissionService {
     @Autowired
     private SubmissionRepository submissionRepository;
 
-    public Submission findSubmissionById(String id) {
+    public Submission findSubmissionById(Long id) {
         return submissionRepository.findSubmissionById(id);
     }
 
-    public Submission saveSubmission(SubmissionTemplate s){
+    public String saveSubmission(String name, String srn, MultipartFile file){
         
-        String assignmnentId = s.getAssignmnentId();
-        String studentId = s.getStudentId();
-        String fileName = s.getFileName();
-        Date submittedOn = new Date();
-
         try {
-            Path filePath = Path.of(FileUtils.getSubmissionFilePath(studentId, s.getAssignmnentId(), fileName));          
-            Path tempPath = Path.of(FileUtils.getTempFilePath(studentId, fileName));
-            Files.createDirectories(filePath.getParent());
-            Files.move(tempPath, filePath, StandardCopyOption.REPLACE_EXISTING);
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-        
-        Submission submission = new Submission();
-        submission.setAssignmnentId(assignmnentId);
-        submission.setFileName(fileName);
-        submission.setStudentId(studentId);
-        submission.setSubmittedOn(submittedOn);
-        return submissionRepository.save(submission);
+            InputStream iStream = file.getInputStream();
+			System.out.println(String.format("Name:%s\nSRN:%s\n", name, srn));
+
+
+			Path tmp = Files.createTempFile(srn, ".py");
+			Files.copy(iStream, tmp, StandardCopyOption.REPLACE_EXISTING);
+			iStream.close();
+			System.out.println("Saved file to " + tmp);
+
+			String command = String.format("python %s", tmp);
+			Process process = Runtime.getRuntime().exec(command);
+
+			BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+			String line;
+			String output = new String("");
+
+			while ((line = reader.readLine()) != null) {
+				output += line+"\n";
+			}
+			reader.close();
+			
+			Submission s = new Submission();
+            s.setName(name);
+            s.setOutput(output);
+            s.setSrn(srn);
+			s = submissionRepository.save(s);
+			Long id = s.getId();
+
+            output = "SRN: " + srn + " Name: " + name + "\n" + output;
+			return "Code output for submission id: " + id + "\n" + output;
+
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		return "~";
     }
 
     public ResponseEntity<String> uploadSubmission(UploadTemplate upload) {
