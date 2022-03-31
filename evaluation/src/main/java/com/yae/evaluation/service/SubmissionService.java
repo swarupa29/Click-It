@@ -7,6 +7,8 @@ import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.yae.evaluation.RESTTemplates.UploadTemplate;
 import com.yae.evaluation.entity.Submission;
@@ -98,6 +100,10 @@ public class SubmissionService {
         .toUriString();
     
         return ResponseEntity.ok(fileDownloadUri);
+    }
+
+    public List<Submission> findAllById() {
+       return submissionRepository.findAll();
     }
     
 }

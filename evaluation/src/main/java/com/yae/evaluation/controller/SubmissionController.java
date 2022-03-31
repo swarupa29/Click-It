@@ -45,6 +45,13 @@ public class SubmissionController {
         System.out.println("HERE!");
         return "index";
     } 
+
+    @GetMapping(value="/view")
+    String getAllSubmissions(Model model){
+
+        model.addAttribute("rows", submissionService.findAllById());
+        return "table";
+    }
 }
 
 // MULTIPART FORM IS ALREADY A FORM AND CAN HAVE MULTIPLE FIELDS!
