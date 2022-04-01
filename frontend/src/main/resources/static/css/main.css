@@ -1,0 +1,53 @@
+
+.row{
+    flex-grow:1;
+    height:900px;
+    padding-left:20px;
+}
+.classes{
+    padding-bottom: 20px;
+    padding-right: 30px;
+}
+.lhs{
+    background-color:#EFCAAC;
+    height:100%;
+}
+.rhs{
+    background-color: #F5EBE3;
+    height:100%;
+    padding: 20px;
+}
+.assignments{
+    padding:20px;
+}
+.nav{
+    font-size:2.3em;
+}
+.container-fluid{
+    background-color:#C3A289;
+}
+a{
+    color:#835C26 !important;
+}
+.active a{
+    background-color: #835C26 !important;
+    color: white !important;
+}
+.active{
+    background-color: #835C26 !important;
+    color: white !important;
+}
+
+.list-group-horizontal .list-group-item{
+ border-right:none;
+
+}
+.topic{
+    width:80%;
+
+}
+.dl{
+    width:20%;
+    text-align: right;
+}
+
