@@ -9,8 +9,10 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class ClassTemplate {
-    public String name;
+public class SubmissionTemplate {
+    public AssignmentTemplate assignment;
+    public String submissionFiles;
+    public boolean plagarismReport;
+    public double marks;
     
 }
-

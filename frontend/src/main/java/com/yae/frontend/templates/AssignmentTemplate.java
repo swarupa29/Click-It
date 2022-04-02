@@ -9,8 +9,12 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class ClassTemplate {
-    public String name;
+public class AssignmentTemplate {
+    public String title;
+    public String description;
+    public String deadline;
+    public String classAssigned;
+    public String subject;
+    public boolean submitted;
     
 }
-
