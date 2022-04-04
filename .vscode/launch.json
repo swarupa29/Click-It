@@ -45,6 +45,17 @@
           "ignoreFailures": true
         }
       ]
+    },
+    {
+      "type": "java",
+      "name": "Spring Boot-AssignmentApplication<assignment>",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "console": "internalConsole",
+      "mainClass": "com.yae.assignment.AssignmentApplication",
+      "projectName": "assignment",
+      "args": "",
+      "envFile": "${workspaceFolder}/.env"
     }
   ]
 }

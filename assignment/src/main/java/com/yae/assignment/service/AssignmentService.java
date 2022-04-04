@@ -72,7 +72,7 @@ public class AssignmentService {
     }
 
     public List<Assignment> findAllAssignmentByClass(Long id) {
-        return assignmentRepository.findAllAssignmentByClass(id);
+        return assignmentRepository.findAllByClassAssigned(id);
     }
 
     public long addSubmission(long assignmentId, long submissionId, String studentId) {
