@@ -33,7 +33,7 @@ public class AssignmentService {
         Date deadlineDate = f.parse(s.getDeadlineDate());
         long teacher = s.getTeacher();
         long classAssigned = s.getClassAssigned();
-        List<Long> submissions = new ArrayList<Long>();
+        Map<String, Long> submissions = new HashMap<String, Long>();
 
         Assignment assignment = new Assignment();
         assignment.setAssignmentTitle(assignmentTitle);
@@ -44,7 +44,6 @@ public class AssignmentService {
         assignment.setClassAssigned(classAssigned);
         assignment.setSubmissions(submissions);
         
-
         return assignmentRepository.save(assignment);
     }
 
@@ -76,9 +75,9 @@ public class AssignmentService {
         return assignmentRepository.findAllByClassAssigned(id);
     }
 
-    public long addSubmission(long assignmentId, long submissionId) {
+    public long addSubmission(long assignmentId, long submissionId, String studentId) {
         Assignment a = assignmentRepository.findAssignmentById(assignmentId);
-        a.getSubmissions().add(submissionId);
+        a.getSubmissions().put(studentId, submissionId);
         return submissionId;
     }
     

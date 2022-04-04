@@ -1,7 +1,7 @@
 package com.yae.assignment.entity;
 
 import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
@@ -25,5 +25,5 @@ public class Assignment {
     long teacher;
     long classAssigned;
     @ElementCollection
-    List<Long> submissions;
+    Map<String, Long> submissions;
 }
