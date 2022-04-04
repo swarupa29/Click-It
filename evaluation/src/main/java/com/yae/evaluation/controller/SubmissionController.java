@@ -1,5 +1,7 @@
 package com.yae.evaluation.controller;
 
+import java.util.List;
+
 import com.yae.evaluation.entity.Submission;
 import com.yae.evaluation.service.SubmissionService;
 
@@ -19,11 +21,6 @@ public class SubmissionController {
 
     @Autowired
     SubmissionService submissionService;
-
-    @GetMapping(value="/")
-    String home(Model model){
-        return "index";
-    }
  
     @GetMapping(value="/{id}")
     @ResponseBody
@@ -32,25 +29,20 @@ public class SubmissionController {
     }
 
     @PostMapping(value="/submit", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    String saveSubmission(
+    Submission saveSubmission(
         @RequestParam("name") String name,
         @RequestParam("srn") String srn,
-        @RequestParam("file") MultipartFile file,
-        Model model)
+        @RequestParam("file") MultipartFile file)
     {    
-        String output = submissionService.saveSubmission(name, srn, file);
+        return submissionService.saveSubmission(name, srn, file);
 
-        model.addAttribute("result", output);
-        model.addAttribute("submissionStatus", "SUCCESS");
-        System.out.println("HERE!");
-        return "index";
+        
     } 
 
     @GetMapping(value="/view")
-    String getAllSubmissions(Model model){
+    List<Submission> getAllSubmissions(Model model){
 
-        model.addAttribute("rows", submissionService.findAllById());
-        return "table";
+       return submissionService.findAllById();
     }
 }
 
