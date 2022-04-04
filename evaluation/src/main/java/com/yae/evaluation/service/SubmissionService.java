@@ -7,6 +7,8 @@ import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.yae.evaluation.RESTTemplates.UploadTemplate;
 import com.yae.evaluation.entity.Submission;
@@ -31,7 +33,7 @@ public class SubmissionService {
         return submissionRepository.findSubmissionById(id);
     }
 
-    public String saveSubmission(String name, String srn, MultipartFile file){
+    public Submission saveSubmission(String name, String srn, MultipartFile file){
         
         try {
             InputStream iStream = file.getInputStream();
@@ -59,17 +61,12 @@ public class SubmissionService {
             s.setName(name);
             s.setOutput(output);
             s.setSrn(srn);
-			s = submissionRepository.save(s);
-			Long id = s.getId();
-
-            output = "SRN: " + srn + " Name: " + name + "\n" + output;
-			return "Code output for submission id: " + id + "\n" + output;
-
+			return submissionRepository.save(s);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
+            return null;
 		}
-		return "~";
     }
 
     public ResponseEntity<String> uploadSubmission(UploadTemplate upload) {
@@ -98,6 +95,10 @@ public class SubmissionService {
         .toUriString();
     
         return ResponseEntity.ok(fileDownloadUri);
+    }
+
+    public List<Submission> findAllById() {
+       return submissionRepository.findAll();
     }
     
 }
