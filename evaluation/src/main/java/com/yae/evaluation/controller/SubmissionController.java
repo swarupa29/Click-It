@@ -30,7 +30,7 @@ public class SubmissionController {
     @Autowired
     SubmissionService submissionService;
  
-    private RestTemplate restTemplate;
+    private RestTemplate restTemplate = new RestTemplate();
 
     @GetMapping(value="/{id}")
     @ResponseBody
@@ -59,7 +59,7 @@ public class SubmissionController {
         ResponseEntity<AssignmentResponse> response = this.restTemplate.postForEntity(url, entity, AssignmentResponse.class);
 
         System.out.println(response);
-        
+
         return submission;
 
         
