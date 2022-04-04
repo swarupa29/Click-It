@@ -72,7 +72,9 @@
                         <ul class="list-group list-group-horizontal" >
                             <li class="list-group-item topic" th:text="${assignment.title}"></li>
                             <li class="list-group-item dl" th:text="${assignment.deadline}"></li>
-                        </ul>                        
+                            <a th:href="@{/expandAssignment(title=${assignment.title},description=${assignment.description},deadline=${assignment.deadline})}">Expand</a>             
+                        </ul> 
+          
                     </ul>
                 </div>  
                 <div class="assignments" id="finish" style="display: none;">
