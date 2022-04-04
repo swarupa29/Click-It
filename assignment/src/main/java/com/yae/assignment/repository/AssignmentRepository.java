@@ -11,5 +11,5 @@ import org.springframework.stereotype.Repository;
 public interface AssignmentRepository extends JpaRepository<Assignment, String> {
     Assignment findAssignmentById(Long id);
     long deleteAssignmentById(Long id);
-    List<Assignment> findAllByClassAssigned(Long id);
+    List<Assignment> findAllAssignmentByClass(Long id);
 }

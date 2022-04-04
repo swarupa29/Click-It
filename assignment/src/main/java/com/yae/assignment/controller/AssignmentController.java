@@ -43,8 +43,8 @@ public class AssignmentController {
     }
 
     @GetMapping("class/{classId}")
-    List<Assignment> findAllByClass(@PathVariable long classId) {
-        return assignmentService.findAllByClass(classId);
+    List<Assignment> findAllAssignmentByClass(@PathVariable long classId) {
+        return assignmentService.findAllAssignmentByClass(classId);
     }
 
     @PostMapping("submit/{assignmentId}/{submissionId}/{studentId}")

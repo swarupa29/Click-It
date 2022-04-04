@@ -71,8 +71,8 @@ public class AssignmentService {
         return assignmentRepository.deleteAssignmentById(id);
     }
 
-    public List<Assignment> findAllByClass(Long id) {
-        return assignmentRepository.findAllByClassAssigned(id);
+    public List<Assignment> findAllAssignmentByClass(Long id) {
+        return assignmentRepository.findAllAssignmentByClass(id);
     }
 
     public long addSubmission(long assignmentId, long submissionId, String studentId) {
