@@ -1,11 +1,9 @@
 package com.yae.evaluation.controller;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.yae.evaluation.RESTTemplates.AssignmentResponse;
 import com.yae.evaluation.entity.Submission;
 import com.yae.evaluation.service.SubmissionService;
 
@@ -15,7 +13,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,31 +29,33 @@ public class SubmissionController {
  
     private RestTemplate restTemplate = new RestTemplate();
 
-    @GetMapping(value="/{id}")
     @ResponseBody
+    @GetMapping(value="/{id}")
     Submission getSubmission(@PathVariable Long id) {
         return submissionService.findSubmissionById(id);
     }
 
+    @ResponseBody
     @PostMapping(value="/submit", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     Submission saveSubmission(
+        @RequestParam("assignmentId") Long aId,
         @RequestParam("name") String name,
         @RequestParam("srn") String srn,
         @RequestParam("file") MultipartFile file)
     {    
 
-        Submission submission = submissionService.saveSubmission(name, srn, file);
+        Submission submission = submissionService.saveSubmission(name, srn, aId, file);
 
-        String url = String.format("http://localhost:7000/%d/%d/%s", submission.assignmentId, submission.id, submission.srn);
+        String url = String.format("http://localhost:7000/submit/%d/%d/%s", submission.assignmentId, submission.id, submission.srn);
 
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setAccept(Collections.singletonList(MediaType.ALL));
+        // headers.setContentType(MediaType.APPLICATION_JSON);
+        // headers.setAccept(Collections.singletonList(MediaType.ALL));
 
         Map<String, Object> map = new HashMap<>();
         
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(map, headers);
-        ResponseEntity<AssignmentResponse> response = this.restTemplate.postForEntity(url, entity, AssignmentResponse.class);
+        ResponseEntity<Integer> response = this.restTemplate.postForEntity(url, entity, Integer.class);
 
         System.out.println(response);
 
@@ -65,8 +64,9 @@ public class SubmissionController {
         
     } 
 
+    @ResponseBody
     @GetMapping(value="/view")
-    List<Submission> getAllSubmissions(Model model){
+    List<Submission> getAllSubmissions(){
 
        return submissionService.findAllById();
     }

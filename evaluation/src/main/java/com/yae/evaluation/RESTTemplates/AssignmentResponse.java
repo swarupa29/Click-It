@@ -1,5 +1,7 @@
 package com.yae.evaluation.RESTTemplates;
 
-public class AssignmentResponse {
+import java.io.Serializable;
+
+public class AssignmentResponse implements Serializable {
     Long submissionId;
 }

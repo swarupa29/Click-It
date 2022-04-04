@@ -32,7 +32,7 @@ public class SubmissionService {
         return submissionRepository.findSubmissionById(id);
     }
 
-    public Submission saveSubmission(String name, String srn, MultipartFile file){
+    public Submission saveSubmission(String name, String srn, Long assignmentId, MultipartFile file){
         
         try {
             InputStream iStream = file.getInputStream();
@@ -60,6 +60,7 @@ public class SubmissionService {
             s.setName(name);
             s.setOutput(output);
             s.setSrn(srn);
+            s.setAssignmentId(assignmentId);
 			return submissionRepository.save(s);
 		}
 		catch (Exception e) {
