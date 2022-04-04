@@ -23,4 +23,5 @@ public class Submission {
     public String name;
     public String srn;
     public String output;
+    public Long assignmentId;
 }

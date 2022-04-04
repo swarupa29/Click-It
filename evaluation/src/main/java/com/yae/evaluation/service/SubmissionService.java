@@ -7,7 +7,6 @@ import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
 import java.util.List;
 
 import com.yae.evaluation.RESTTemplates.UploadTemplate;
@@ -28,7 +27,7 @@ public class SubmissionService {
 
     @Autowired
     private SubmissionRepository submissionRepository;
-
+     
     public Submission findSubmissionById(Long id) {
         return submissionRepository.findSubmissionById(id);
     }
