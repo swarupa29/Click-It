@@ -23,8 +23,6 @@
                     <hr>
                     <p class="card-text" style="padding:30px;font-size:1.3em" th:text="${description}"></p>
                     <hr>
-                    <h4>Test case file</h4>
-                    <a th:href="${submission.testcase}" th:attr="download=${submission.testcase}" > Download </a>
                     <br/>
                     <form action="submit" method="post" enctype="multipart/form-data" style="padding:20px;">
                         <label for="file" style="padding-left:20px;"><h3>Submit Code files</h3> </label>

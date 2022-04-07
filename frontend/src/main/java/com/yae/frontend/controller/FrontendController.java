@@ -1,10 +1,10 @@
 package com.yae.frontend.controller;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.yae.frontend.entity.Assignment;
 import com.yae.frontend.service.AssignmentModel;
+import com.yae.frontend.service.FrontendService;
 /*
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -15,10 +15,10 @@ import java.net.URL;
 */
 import com.yae.frontend.templates.AssignmentTemplate;
 import com.yae.frontend.templates.ClassTemplate;
-import com.yae.frontend.templates.SubmissionTemplate;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,6 +32,8 @@ import org.springframework.web.multipart.MultipartFile;
 public class FrontendController {
     @Autowired
     AssignmentModel assignmentModel;
+    @Autowired
+    FrontendService service;
 
     @GetMapping("/index")
     public String showList(Model model) {
@@ -78,14 +80,10 @@ public class FrontendController {
     {
         System.out.println(a.deadline);
         //get assignment files from assignment Service
-        File f= new File("sample.txt");
-        SubmissionTemplate res2= new SubmissionTemplate(f,false,15);
         assignmentModel.saveAssignment(a);
-        model.addAttribute("submission",res2);
         model.addAttribute("result","");
         model.addAttribute("marks","NA");
 
-        System.out.println(res2.testcase);
         return "assignment";
     }
 
@@ -98,20 +96,22 @@ public class FrontendController {
         //make call to the ms to submit the file
         //String output = submissionService.saveSubmission(file);
 
+        //Submission s=new Submission(file);
+        ResponseEntity<Integer> mark;
+        mark = service.postForObject(file);
+
         String output="Code files have been submitted succesfully";
         java.util.List<Assignment> a = assignmentModel.getAllAssignments();
         model.addAttribute("title",a.get(0).getTitle());
         model.addAttribute("deadline",a.get(0).getDeadline());
         model.addAttribute("description",a.get(0).getDescription());
         model.addAttribute("result", output);
-        File f= new File("sample.txt");
-        SubmissionTemplate res2= new SubmissionTemplate(f,false,15);
-        model.addAttribute("submission",res2);
         System.out.println("HERE!");
 
         //mark=get from evalv service
-        int mark=15;
-        model.addAttribute("marks",mark);
+        //int mark=15;
+
+        model.addAttribute("marks",mark.getBody());
 
 
         return "assignment";
