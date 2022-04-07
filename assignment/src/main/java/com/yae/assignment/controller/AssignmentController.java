@@ -7,7 +7,11 @@ import com.yae.assignment.RESTTemplates.AssignmentTemplate;
 import com.yae.assignment.entity.Assignment;
 import com.yae.assignment.service.AssignmentService;
 
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -50,5 +54,18 @@ public class AssignmentController {
     @PostMapping("submit/{assignmentId}/{submissionId}/{studentId}")
     long submit (@PathVariable long assignmentId, @PathVariable long submissionId, @PathVariable String studentId) {
         return assignmentService.addSubmission(assignmentId, submissionId, studentId);
+    }
+
+    @PostMapping("add-test-case/")
+    ResponseEntity<String> addTestCase( @RequestBody String reqBody) throws org.json.simple.parser.ParseException {
+        JSONObject body = (JSONObject) new JSONParser().parse(reqBody);
+        Long assignmentId = (Long) body.get("assignmentId");
+        String input = (String) body.get("input");
+        String output = (String) body.get("output");
+
+        if (assignmentService.addTestCase(assignmentId, input, output))
+            return new ResponseEntity<String>("Added new test case!", HttpStatus.OK);
+        else 
+            return new ResponseEntity<String>("Failed to add test case", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

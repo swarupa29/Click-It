@@ -26,4 +26,6 @@ public class Assignment {
     long classAssigned;
     @ElementCollection
     Map<String, Long> submissions;
+    @ElementCollection
+    Map<String, String> testCases;
 }

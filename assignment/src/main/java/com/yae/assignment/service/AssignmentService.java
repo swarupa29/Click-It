@@ -34,6 +34,7 @@ public class AssignmentService {
         long teacher = s.getTeacher();
         long classAssigned = s.getClassAssigned();
         Map<String, Long> submissions = new HashMap<String, Long>();
+        Map<String, String> testCases = new HashMap<>();
 
         Assignment assignment = new Assignment();
         assignment.setAssignmentTitle(assignmentTitle);
@@ -43,7 +44,7 @@ public class AssignmentService {
         assignment.setTeacher(teacher);
         assignment.setClassAssigned(classAssigned);
         assignment.setSubmissions(submissions);
-        
+        assignment.setTestCases(testCases);
         return assignmentRepository.save(assignment);
     }
 
@@ -81,4 +82,20 @@ public class AssignmentService {
         return submissionId;
     }
     
+    public boolean addTestCase(Long assignmentId, String input, String output) {
+
+        try {
+            Map<String, String> tc = new HashMap<>();
+            tc.put(input, output);
+
+            Assignment assignment = assignmentRepository.findAssignmentById(assignmentId);
+
+            assignment.setTestCases(tc);
+            assignmentRepository.save(assignment);
+            return true;
+        }
+        catch (Exception E) {
+            return false;
+        }
+    }
 }
