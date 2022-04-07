@@ -9,13 +9,15 @@
     padding-right: 30px;
 }
 .lhs{
-    background-color:#EFCAAC;
+    background-color:rgb(63, 73, 83);
     height:100%;
+    color: white;
+    box-shadow: black 1px 2px 2px;
 }
 .rhs{
-    background-color: #F5EBE3;
+    background-color: #fff;
     height:100%;
-    padding: 20px;
+    padding: 0px !important;
 }
 .assignments{
     padding:20px;
@@ -23,19 +25,9 @@
 .nav{
     font-size:2.3em;
 }
-.container-fluid{
-    background-color:#C3A289;
-}
+
 a{
     color:#835C26 !important;
-}
-.active a{
-    background-color: #835C26 !important;
-    color: white !important;
-}
-.active{
-    background-color: #835C26 !important;
-    color: white !important;
 }
 
 .list-group-horizontal .list-group-item{
@@ -51,3 +43,41 @@ a{
     text-align: right;
 }
 
+.navbar {
+    color: #3bba9c;
+    font-weight: bolder;
+    text-shadow: white 0.5px 0.5px 1px;
+    background-color: #373e98;
+    box-shadow: black 1px 2px 2px;
+}
+
+.nav-pills {
+    display: flex;
+    justify-content: space-around;
+    font-size: 1.4em;
+    background-color: #3bba9c;
+    color: black;
+    box-shadow: black 1px 2px 2px;
+    margin: 1px;
+    text-align: center;
+}
+
+.nav-link{
+    text-decoration: none;
+    color: white !important;
+    font-weight: 200;
+}
+
+.nav-item {
+    display: flex;
+    flex-grow: 1;
+    align-items: center;
+    align-self: center;
+    justify-content: center;
+    border: rgb(63, 73, 83) solid 1px;
+
+}
+
+.nav-item:hover{
+    background-color: #098366;
+}
