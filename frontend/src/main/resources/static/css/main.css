@@ -55,7 +55,6 @@ a{
     display: flex;
     justify-content: space-around;
     font-size: 1.4em;
-    background-color: #3bba9c;
     color: black;
     box-shadow: black 1px 2px 2px;
     margin: 1px;
@@ -75,9 +74,20 @@ a{
     align-self: center;
     justify-content: center;
     border: rgb(63, 73, 83) solid 1px;
+    background-color: #3bba9c;
 
 }
 
 .nav-item:hover{
     background-color: #098366;
+}
+
+.nav-link-active {
+    display: flex;
+    flex-grow: 1;
+    align-items: center;
+    align-self: center;
+    justify-content: center;
+    border: rgb(63, 73, 83) solid 1px;
+    background-color: #098366 !important;
 }

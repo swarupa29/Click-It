@@ -35,6 +35,16 @@ public class FrontendController {
     @Autowired
     FrontendService service;
 
+    @GetMapping("/")
+    public String login(Model model){
+        return "login";
+    }
+
+    @GetMapping("/signup")
+    public String signup(Model model){
+        return "signup";
+    }
+
     @GetMapping("/index")
     public String showList(Model model) {
         //String urlstr="http://localhost:8080/GetAllClasses";
