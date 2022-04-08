@@ -1,18 +1,14 @@
 package com.yae.frontend.controller;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import com.yae.frontend.entity.Assignment;
 import com.yae.frontend.service.AssignmentModel;
 import com.yae.frontend.service.FrontendService;
-/*
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-*/
 import com.yae.frontend.templates.AssignmentTemplate;
 import com.yae.frontend.templates.ClassTemplate;
 
@@ -30,25 +26,36 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Controller
 public class FrontendController {
-    @Autowired
-    AssignmentModel assignmentModel;
-    @Autowired
-    FrontendService service;
 
+    @Autowired
+    private AssignmentModel assignmentModel;
+   
+    @Autowired
+    private FrontendService service;
+
+    // HOME PAGE
     @GetMapping("/")
-    public String login(Model model){
+    public String landing(HttpServletRequest request, HttpServletResponse response, Model model){
+        return service.landing(request, response, model);
+    }
+    
+    // SUBMIT LOGIN FORM 
+    @PostMapping("/login")
+    public String login(@RequestParam("srn") String srn, HttpServletResponse response){
+        return service.login(srn, response);
+    }
+
+    // LOGIN PAGE
+    @GetMapping("/login")
+    public String loginPage(){
         return "login";
     }
 
-    @GetMapping("/signup")
-    public String signup(Model model){
-        return "signup";
-    }
 
     @GetMapping("/index")
     public String showList(Model model) {
         //String urlstr="http://localhost:8080/GetAllClasses";
-        String desc="this is descri[tion of an assignment that has been made temporary";
+        String desc="this is description of an assignment that has been made temporary";
         
                 /*
                 HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -128,14 +135,7 @@ public class FrontendController {
     } 
 
     @GetMapping(value="changeClass")
-    public String changeClass(Model model, @ModelAttribute("name") String name)
-    {
-
-        //Get assignments for that class from the ms
-
-        return "index";
-    }
-
+    public String changeClass(Model model, @ModelAttribute("name") String name){ return "index";}
     
 }
 
