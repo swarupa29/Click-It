@@ -1,7 +1,6 @@
 package com.yae.student.service;
 
 import java.util.HashSet;
-import java.util.Set;
 
 import com.yae.student.RESTTemplates.StudentTemplate;
 import com.yae.student.entity.Student;
@@ -24,7 +23,7 @@ public class StudentService {
         String name = s.getName();
         int age = s.getAge();
         String email = s.getEmail();
-        Set<Long> classIds = new HashSet<>();
+        HashSet<Long> classIds = new HashSet<>();
 
         Student savedStudent = new Student();
         savedStudent.setId(id);

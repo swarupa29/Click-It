@@ -7,5 +7,5 @@ public class Student {
     public String name;
     public int age;
     public String email;
-    public HashSet<Long> ClassroomIds;
+    public HashSet<Long> classroomIds;
 }

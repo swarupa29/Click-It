@@ -5,7 +5,8 @@ import java.io.IOException;
 // import java.net.http.HttpClient;
 // import java.net.http.HttpRequest;
 // import java.net.http.HttpResponse;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -71,6 +72,7 @@ public class FrontendService {
         response.addCookie(cookie_1);
         response.addCookie(cookie_2);
 
+        System.out.println(environment.getProperty("service_url.student")+"/"+srn);
         Student student = restTemplate.getForObject(environment.getProperty("service_url.student")+"/"+srn, Student.class);
         if(student == null) {
             response.sendRedirect(environment.getProperty("service_url.frontend")+"/error");
@@ -80,7 +82,9 @@ public class FrontendService {
         Session session = new Session();
         session.setId(sessionId);
         session.setUserId(srn);
-        session.setClassIds(student.ClassroomIds);
+        session.setClassIds(student.classroomIds);
+        System.out.println("Classroom Ids:" + student.classroomIds);
+
         sessionRepository.save(session);
 
         response.sendRedirect(environment.getProperty("service_url.frontend")+"/");
@@ -110,14 +114,28 @@ public class FrontendService {
                     String sessionId = cookie.getValue();
                     Session session = sessionRepository.findSessionById(Long.parseLong(sessionId));
                     
+                   
+
                     if (session != null) {
-                        Set<Long> classIds = new HashSet<>();
-                        classIds.add((long)1);
+
+                        Student student = restTemplate.getForObject(environment.getProperty("service_url.student")+"/"+session.getUserId(), Student.class);
+
+                        // NOTE: Update any session data here
+                        session.setClassIds(student.classroomIds);
+                        sessionRepository.save(session);
+                        // Fetch List of Classrooms
+                        Set<Long> classIds = session.getClassIds();
+                        System.out.println(classIds);
+                        // classIds.add((long)1);
+                        Set<Classroom> classes =  new HashSet<>();
+
                         for(long id: classIds) {
                             Classroom classroom = restTemplate.getForObject(environment.getProperty("service_url.classroom")+"/"+id, Classroom.class);
-                            model.addAttribute("class", classroom);
+                            classes.add(classroom);
                             System.out.println(classroom.getName());
                         }
+
+                        model.addAttribute("classes", classes);
                         return "index";
                     }
                 }

@@ -14,8 +14,8 @@ public class Classroom {
     Long id;
     String name;
 
-    List<Long> students;
-    List<Long> assignments;
+    Set<Long> students;
+    Set<Long> assignments;
 
     Long teacherId;
     Long taId;
