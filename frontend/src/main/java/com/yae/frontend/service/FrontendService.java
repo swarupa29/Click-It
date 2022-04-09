@@ -1,6 +1,11 @@
 package com.yae.frontend.service;
 
 import java.io.IOException;
+// import java.net.URI;
+// import java.net.http.HttpClient;
+// import java.net.http.HttpRequest;
+// import java.net.http.HttpResponse;
+import java.util.*;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -8,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.yae.frontend.entity.Session;
 import com.yae.frontend.repository.SessionRepository;
+import com.yae.frontend.templates.Classroom;
 import com.yae.frontend.templates.Student;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -103,10 +109,15 @@ public class FrontendService {
                 if ("sessionId".equals(cookie.getName())) {
                     String sessionId = cookie.getValue();
                     Session session = sessionRepository.findSessionById(Long.parseLong(sessionId));
+                    
                     if (session != null) {
-
-                        // TO-DO: Home Page needs, list of assignments and list of classes for given student.
-                        // List<Long>      
+                        Set<Long> classIds = new HashSet<>();
+                        classIds.add((long)1);
+                        for(long id: classIds) {
+                            Classroom classroom = restTemplate.getForObject(environment.getProperty("service_url.classroom")+"/"+id, Classroom.class);
+                            model.addAttribute("class", classroom);
+                            System.out.println(classroom.getName());
+                        }
                         return "index";
                     }
                 }
