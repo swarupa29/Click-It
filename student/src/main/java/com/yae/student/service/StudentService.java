@@ -1,5 +1,8 @@
 package com.yae.student.service;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import com.yae.student.RESTTemplates.StudentTemplate;
 import com.yae.student.entity.Student;
 import com.yae.student.repository.StudentRepository;
@@ -21,13 +24,28 @@ public class StudentService {
         String name = s.getName();
         int age = s.getAge();
         String email = s.getEmail();
+        Set<Long> classIds = new HashSet<>();
 
         Student savedStudent = new Student();
         savedStudent.setId(id);
         savedStudent.setName(name);
         savedStudent.setAge(age);
         savedStudent.setEmail(email);
-        
+        savedStudent.setClassroomIds(classIds);
+
         return studentRepository.save(savedStudent);
     }
+
+    public void addStudentToClassroom(String id, Long classId) {
+        Student s = studentRepository.findStudentById(id);
+        s.getClassroomIds().add(classId);
+        studentRepository.save(s);
+    }
+
+    public void removeStudentFromClass(String id, Long classId) {
+        Student s = studentRepository.findStudentById(id);
+        s.getClassroomIds().remove(classId);
+        studentRepository.save(s);
+    }
+
 }

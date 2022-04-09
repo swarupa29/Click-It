@@ -15,10 +15,10 @@ public class Classroom {
     Long classId;
 
     @ElementCollection
-    List<String> students;
+    List<String> studentIds;
     
     @ElementCollection
     List<Long> assignments;
-    Long teacher;
-    Long ta;
+    Long teacherId;
+    Long taId;
 }

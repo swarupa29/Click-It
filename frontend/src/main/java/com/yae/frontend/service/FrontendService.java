@@ -8,8 +8,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.yae.frontend.entity.Session;
 import com.yae.frontend.repository.SessionRepository;
+import com.yae.frontend.templates.Student;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -21,17 +23,24 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
+import net.minidev.json.JSONObject;
+
 @Service
 public class FrontendService {
 
     @Autowired 
     private SessionRepository sessionRepository;
     
+    @Autowired
+    private Environment environment;
+
     private final RestTemplate restTemplate = new RestTemplate();
 
-    // public FrontendService(RestTemplateBuilder restTemplateBuilder) {
-    //     this.restTemplate = restTemplateBuilder.build();
-    // }
+    private String frontend_url = environment.getProperty("service_url.frontend");
+    private String classroom_url = environment.getProperty("service_url.classroom");
+    private String student_url = environment.getProperty("service_url.student");
+    private String evaluation_url = environment.getProperty("service_url.evaluation");
+    private String assignment_url = environment.getProperty("service_url.assignment");
 
 
     public ResponseEntity<Integer> postForObject(MultipartFile file) {
@@ -51,7 +60,10 @@ public class FrontendService {
     }
      
       
-    public String login(String srn, HttpServletResponse response){
+    public String login(String srn, HttpServletResponse response) throws IOException{
+
+        // TODO Fetch Student Object, Validate if exists and then store in session storage.
+
         Long sessionId = Math.round(Math.random()*100);
         Cookie cookie_1 = new Cookie("userId", srn);
         Cookie cookie_2 = new Cookie("sessionId", Long.toString(sessionId));
@@ -60,18 +72,20 @@ public class FrontendService {
         response.addCookie(cookie_1);
         response.addCookie(cookie_2);
 
+        Student student = restTemplate.getForObject(student_url+"/"+srn, Student.class);
+        if(student == null) {
+            response.sendRedirect(frontend_url+"/error");
+            return "login";
+        }
+        
         Session session = new Session();
         session.setId(sessionId);
         session.setUserId(srn);
+        session.setClassIds(student.ClassroomIds);
         sessionRepository.save(session);
-        
-        try {
-            response.sendRedirect("http://localhost:8080/");
-        }
-        catch (IOException e){
-            e.printStackTrace();
-        }
 
+        response.sendRedirect(frontend_url+"/");
+ 
         return "login";
         
     }
@@ -84,7 +98,7 @@ public class FrontendService {
         if(cookies == null)                 
         { 
             try {
-                response.sendRedirect("http://localhost:8080/login");
+                response.sendRedirect(frontend_url+"/login");
             }
             catch (IOException e){
                 e.printStackTrace();
@@ -97,13 +111,15 @@ public class FrontendService {
                     String sessionId = cookie.getValue();
                     Session session = sessionRepository.findSessionById(Long.parseLong(sessionId));
                     if (session != null) {
-                        model.addAttribute("session", session);
+
+                        // TO-DO: Home Page needs, list of assignments and list of classes for given student.
+                        // List<Long>      
                         return "index";
                     }
                 }
             }
             try {
-                response.sendRedirect("http://localhost:8080/login");
+                response.sendRedirect(frontend_url+"/login");
             }
             catch (IOException e){
                 e.printStackTrace();
@@ -111,5 +127,20 @@ public class FrontendService {
         }
         
         return "index";
+    }
+
+
+    public ResponseEntity<String> joinClass(String userId, Long classId, HttpServletResponse response) throws IOException {
+
+        JSONObject classJoinReq = new JSONObject();
+        classJoinReq.put("userId", userId);
+        classJoinReq.put("classId", classId);
+        
+        HttpEntity<String> request = new HttpEntity<>(classJoinReq.toJSONString());
+
+        response.sendRedirect(frontend_url);
+        return restTemplate.postForEntity(student_url+"/join", request, String.class);
+
+
     }
 }

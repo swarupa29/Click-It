@@ -1,7 +1,6 @@
 package com.yae.frontend.controller;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -10,17 +9,18 @@ import com.yae.frontend.entity.Assignment;
 import com.yae.frontend.service.AssignmentModel;
 import com.yae.frontend.service.FrontendService;
 import com.yae.frontend.templates.AssignmentTemplate;
-import com.yae.frontend.templates.ClassTemplate;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 
@@ -41,7 +41,8 @@ public class FrontendController {
     
     // SUBMIT LOGIN FORM 
     @PostMapping("/login")
-    public String login(@RequestParam("srn") String srn, HttpServletResponse response){
+    public String login(@RequestParam("srn") String srn, HttpServletResponse response)
+    throws IOException {
         return service.login(srn, response);
     }
 
@@ -51,45 +52,49 @@ public class FrontendController {
         return "login";
     }
 
-
-    @GetMapping("/index")
-    public String showList(Model model) {
-        //String urlstr="http://localhost:8080/GetAllClasses";
-        String desc="this is description of an assignment that has been made temporary";
-        
-                /*
-                HttpURLConnection con = (HttpURLConnection) url.openConnection();
-                con.setRequestMethod("GET");
-                BufferedReader in = new BufferedReader(
-                new InputStreamReader(con.getInputStream()));
-                String inputLine;
-
-                StringBuffer response = new StringBuffer();
-
-                while ((inputLine = in.readLine()) != null) {
-                    response.append(inputLine);
-                }
-                in.close();
-                System.out.println(response.toString());
-                */
-
-        //testing 
-        ClassTemplate response1=new ClassTemplate("Class a");
-        ClassTemplate response2=new ClassTemplate("Class b");
-        List<ClassTemplate> lst= new ArrayList<ClassTemplate>();
-        lst.add(response1);
-        lst.add(response2);
-
-        AssignmentTemplate res= new AssignmentTemplate("CD",desc,"1/4/22","class a","cd",true);
-
-        AssignmentTemplate res2= new AssignmentTemplate("MVC",desc,"22/4/22","class a","ooad",false);
-        model.addAttribute("assignment1",res2);
-        model.addAttribute("assignment2",res);
-
-        model.addAttribute("classes",lst);
-
-        return "index";
+    @GetMapping("/error")
+    public String error(){
+        return "error";
     }
+
+    // @GetMapping("/index")
+    // public String showList(Model model) {
+    //     //String urlstr="http://localhost:8080/GetAllClasses";
+    //     String desc="this is description of an assignment that has been made temporary";
+        
+    //             /*
+    //             HttpURLConnection con = (HttpURLConnection) url.openConnection();
+    //             con.setRequestMethod("GET");
+    //             BufferedReader in = new BufferedReader(
+    //             new InputStreamReader(con.getInputStream()));
+    //             String inputLine;
+
+    //             StringBuffer response = new StringBuffer();
+
+    //             while ((inputLine = in.readLine()) != null) {
+    //                 response.append(inputLine);
+    //             }
+    //             in.close();
+    //             System.out.println(response.toString());
+    //             */
+
+    //     //testing 
+    //     ClassTemplate response1=new ClassTemplate("Class a");
+    //     ClassTemplate response2=new ClassTemplate("Class b");
+    //     List<ClassTemplate> lst= new ArrayList<ClassTemplate>();
+    //     lst.add(response1);
+    //     lst.add(response2);
+
+    //     AssignmentTemplate res= new AssignmentTemplate("CD",desc,"1/4/22","class a","cd",true);
+
+    //     AssignmentTemplate res2= new AssignmentTemplate("MVC",desc,"22/4/22","class a","ooad",false);
+    //     model.addAttribute("assignment1",res2);
+    //     model.addAttribute("assignment2",res);
+
+    //     model.addAttribute("classes",lst);
+
+    //     return "index";
+    // }
 
     @GetMapping(value="expandAssignment")
     public String expandAssignment(@ModelAttribute("title") String title, @ModelAttribute("description") String description,
@@ -136,6 +141,13 @@ public class FrontendController {
 
     @GetMapping(value="changeClass")
     public String changeClass(Model model, @ModelAttribute("name") String name){ return "index";}
+
+    @PostMapping("/join")
+    @ResponseBody
+    public ResponseEntity<String> joinClass(@CookieValue String userId, @RequestParam Long classId, HttpServletResponse response) throws IOException{        
+        return service.joinClass(userId, classId, response);
+        
+    }
     
 }
 

@@ -55,11 +55,12 @@
                 </ul>
                 <h4 class="add-class">Add class</h4>
 
-                
-                <div class="input-group mb-3" style="padding:30px;">
-                    <button class="btn btn-outline-secondary" style="background-color:#3bba9c; color: white" type="button" id="button-addon1">+</button>
-                    <input type="text" class="form-control"  placeholder="Class Code" aria-label="Example text with button addon" aria-describedby="button-addon1">
-                </div>
+                <form action="join" method="POST">
+                    <div class="input-group mb-3" style="padding:30px;">
+                        <button class="btn btn-outline-secondary" style="background-color:#3bba9c; color: white" type="submit" id="button-addon1">+</button>
+                        <input type="text" class="form-control"  placeholder="Class Code" aria-label="Example text with button addon" aria-describedby="button-addon1" name="classId">
+                    </div>
+                </form>
             </div>
             
             <div class="rhs col-md-9">

@@ -1,5 +1,8 @@
 package com.yae.student.entity;
 
+import java.util.Set;
+
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
@@ -22,4 +25,7 @@ public class Student {
     public String name;
     public int age;
     public String email;
+
+    @ElementCollection
+    Set<Long> ClassroomIds;
 }
