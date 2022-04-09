@@ -148,6 +148,26 @@ public class FrontendController {
         return service.joinClass(userId, classId, response);
         
     }
+    @GetMapping("/teacherHome")
+    public String teacherhome(){
+        return "teacherHome";
+    }
+
+    @GetMapping(value="createAssignment")
+    public String createAssignment()
+    {
+        return "createAssignment";
+    }
+
+    @PostMapping("/createClass")
+    public String createClass(@RequestParam("classId") String className)
+    {
+        //call save using class service 
+        System.out.println(className);
+
+       // teacherhome();
+        return "teacherHome";
+    }
     
 }
 
