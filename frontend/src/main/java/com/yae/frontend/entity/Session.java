@@ -1,7 +1,6 @@
 package com.yae.frontend.entity;
 
-import java.util.List;
-import java.util.Set;
+import java.util.HashSet;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -20,8 +19,8 @@ public class Session {
     String userId;
     String name;
     String email;
-    Set<Long> classIds;
-    List<String> classNames;
-    List<Long> pendingAssignmentIds;
-    List<Long> completedAssignmentIds;
+    HashSet<Long> classIds;
+    // List<String> classNames;
+    // List<Long> pendingAssignmentIds;
+    // List<Long> completedAssignmentIds;
 }

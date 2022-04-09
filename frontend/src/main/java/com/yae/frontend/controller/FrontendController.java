@@ -96,7 +96,7 @@ public class FrontendController {
     //     return "index";
     // }
 
-    @GetMapping(value="expandAssignment")
+    @GetMapping(value="/expandAssignment")
     public String expandAssignment(@ModelAttribute("title") String title, @ModelAttribute("description") String description,
      @ModelAttribute("deadline") String deadline,Model model, AssignmentTemplate a)
     {
@@ -139,7 +139,7 @@ public class FrontendController {
         return "assignment";
     } 
 
-    @GetMapping(value="changeClass")
+    @GetMapping(value="/changeClass")
     public String changeClass(Model model, @ModelAttribute("name") String name){ return "index";}
 
     @PostMapping("/join")

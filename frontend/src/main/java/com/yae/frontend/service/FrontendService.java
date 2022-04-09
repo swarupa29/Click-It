@@ -36,13 +36,6 @@ public class FrontendService {
 
     private final RestTemplate restTemplate = new RestTemplate();
 
-    private String frontend_url = environment.getProperty("service_url.frontend");
-    private String classroom_url = environment.getProperty("service_url.classroom");
-    private String student_url = environment.getProperty("service_url.student");
-    private String evaluation_url = environment.getProperty("service_url.evaluation");
-    private String assignment_url = environment.getProperty("service_url.assignment");
-
-
     public ResponseEntity<Integer> postForObject(MultipartFile file) {
 
         HttpHeaders headers = new HttpHeaders();
@@ -72,9 +65,9 @@ public class FrontendService {
         response.addCookie(cookie_1);
         response.addCookie(cookie_2);
 
-        Student student = restTemplate.getForObject(student_url+"/"+srn, Student.class);
+        Student student = restTemplate.getForObject(environment.getProperty("service_url.student")+"/"+srn, Student.class);
         if(student == null) {
-            response.sendRedirect(frontend_url+"/error");
+            response.sendRedirect(environment.getProperty("service_url.frontend")+"/error");
             return "login";
         }
         
@@ -84,7 +77,7 @@ public class FrontendService {
         session.setClassIds(student.ClassroomIds);
         sessionRepository.save(session);
 
-        response.sendRedirect(frontend_url+"/");
+        response.sendRedirect(environment.getProperty("service_url.frontend")+"/");
  
         return "login";
         
@@ -98,7 +91,7 @@ public class FrontendService {
         if(cookies == null)                 
         { 
             try {
-                response.sendRedirect(frontend_url+"/login");
+                response.sendRedirect(environment.getProperty("service_url.frontend")+"/login");
             }
             catch (IOException e){
                 e.printStackTrace();
@@ -119,7 +112,7 @@ public class FrontendService {
                 }
             }
             try {
-                response.sendRedirect(frontend_url+"/login");
+                response.sendRedirect(environment.getProperty("service_url.frontend")+"/login");
             }
             catch (IOException e){
                 e.printStackTrace();
@@ -138,8 +131,8 @@ public class FrontendService {
         
         HttpEntity<String> request = new HttpEntity<>(classJoinReq.toJSONString());
 
-        response.sendRedirect(frontend_url);
-        return restTemplate.postForEntity(student_url+"/join", request, String.class);
+        response.sendRedirect(environment.getProperty("service_url.frontend"));
+        return restTemplate.postForEntity(environment.getProperty("service_url.student")+"/join", request, String.class);
 
 
     }
