@@ -5,7 +5,6 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.yae.frontend.entity.Assignment;
 import com.yae.frontend.service.AssignmentModel;
 import com.yae.frontend.service.FrontendService;
 import com.yae.frontend.templates.AssignmentTemplate;
@@ -100,13 +99,9 @@ public class FrontendController {
     public String expandAssignment(@ModelAttribute("title") String title, @ModelAttribute("description") String description,
      @ModelAttribute("deadline") String deadline,Model model, AssignmentTemplate a)
     {
-        System.out.println(a.deadline);
-        //get assignment files from assignment Service
-        assignmentModel.saveAssignment(a);
-        model.addAttribute("result","");
-        model.addAttribute("marks","NA");
 
-        return "assignment";
+        return service.expandAssignment(title, description,deadline,model,a,assignmentModel);
+       
     }
 
 
@@ -115,28 +110,9 @@ public class FrontendController {
         @RequestParam("file") MultipartFile file,
         Model model)
     {    
-        //make call to the ms to submit the file
-        //String output = submissionService.saveSubmission(file);
 
-        //Submission s=new Submission(file);
-        ResponseEntity<Integer> mark;
-        mark = service.postForObject(file);
-
-        String output="Code files have been submitted succesfully";
-        java.util.List<Assignment> a = assignmentModel.getAllAssignments();
-        model.addAttribute("title",a.get(0).getTitle());
-        model.addAttribute("deadline",a.get(0).getDeadline());
-        model.addAttribute("description",a.get(0).getDescription());
-        model.addAttribute("result", output);
-        System.out.println("HERE!");
-
-        //mark=get from evalv service
-        //int mark=15;
-
-        model.addAttribute("marks",mark.getBody());
-
-
-        return "assignment";
+        return service.submitAssignment(file,model,assignmentModel);
+        
     } 
 
     @GetMapping(value="/changeClass")

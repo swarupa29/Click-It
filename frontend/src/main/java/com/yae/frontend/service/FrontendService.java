@@ -6,14 +6,17 @@ import java.io.IOException;
 // import java.net.http.HttpRequest;
 // import java.net.http.HttpResponse;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.yae.frontend.entity.Assignment;
 import com.yae.frontend.entity.Session;
 import com.yae.frontend.repository.SessionRepository;
+import com.yae.frontend.templates.AssignmentTemplate;
 import com.yae.frontend.templates.Classroom;
 import com.yae.frontend.templates.Student;
 
@@ -129,12 +132,15 @@ public class FrontendService {
                         // classIds.add((long)1);
                         Set<Classroom> classes =  new HashSet<>();
 
-                        for(long id: classIds) {
-                            Classroom classroom = restTemplate.getForObject(environment.getProperty("service_url.classroom")+"/"+id, Classroom.class);
-                            classes.add(classroom);
-                            System.out.println(classroom.getName());
-                        }
+                        classes=getclasses(classIds);
 
+
+                        Classroom class1= classes.iterator().next();
+                        Set<Long> assignment_ids=class1.getAssignments();
+
+                        //TBD 
+
+                        
                         model.addAttribute("classes", classes);
                         return "index";
                     }
@@ -152,6 +158,19 @@ public class FrontendService {
     }
 
 
+    public Set<Classroom> getclasses(Set<Long> classIds)
+    {
+        Set<Classroom> classes =  new HashSet<>();
+        for(long id: classIds) {
+            Classroom classroom = restTemplate.getForObject(environment.getProperty("service_url.classroom")+"/"+id, Classroom.class);
+            classes.add(classroom);
+            System.out.println(classroom.getName());
+        }
+
+        return classes;
+
+    }
+
     public ResponseEntity<String> joinClass(String userId, Long classId, HttpServletResponse response) throws IOException {
 
         JSONObject classJoinReq = new JSONObject();
@@ -164,5 +183,43 @@ public class FrontendService {
         return restTemplate.postForEntity(environment.getProperty("service_url.student")+"/join", request, String.class);
 
 
+    }
+
+
+    public String expandAssignment(String title, String description, String deadline,Model model,AssignmentTemplate a, AssignmentModel assignmentModel)
+    {
+        //get assignment files from assignment Service
+
+        assignmentModel.saveAssignment(a);
+        model.addAttribute("result","");
+        model.addAttribute("marks","NA");
+
+        return "assignment";
+    }
+
+    public String submitAssignment(MultipartFile file, Model model, AssignmentModel assignmentModel)
+    {
+        //make call to the ms to submit the file
+        //String output = submissionService.saveSubmission(file);
+
+        //Submission s=new Submission(file);
+        ResponseEntity<Integer> mark;
+        mark = postForObject(file);
+
+        String output="Code files have been submitted succesfully";
+        java.util.List<Assignment> a = assignmentModel.getAllAssignments();
+        model.addAttribute("title",a.get(0).getTitle());
+        model.addAttribute("deadline",a.get(0).getDeadline());
+        model.addAttribute("description",a.get(0).getDescription());
+        model.addAttribute("result", output);
+        System.out.println("HERE!");
+
+        //mark=get from evalv service
+        //int mark=15;
+
+        model.addAttribute("marks",mark.getBody());
+
+
+        return "assignment";
     }
 }
