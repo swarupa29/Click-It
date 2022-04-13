@@ -51,7 +51,7 @@ public class AssignmentController {
         return assignmentService.findAllAssignmentByClass(classId);
     }
 
-    @PostMapping("submit/{assignmentId}/{submissionId}/{studentId}")
+     @PostMapping("submit/{assignmentId}/{submissionId}/{studentId}")
     long submit (@PathVariable long assignmentId, @PathVariable long submissionId, @PathVariable String studentId) {
         return assignmentService.addSubmission(assignmentId, submissionId, studentId);
     }
