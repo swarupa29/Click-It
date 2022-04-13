@@ -5,9 +5,9 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.yae.frontend.service.AssignmentModel;
+import com.yae.frontend.entity.Assignment;
+import com.yae.frontend.model.AssignmentModel;
 import com.yae.frontend.service.FrontendService;
-import com.yae.frontend.templates.AssignmentTemplate;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -97,7 +97,7 @@ public class FrontendController {
 
     @GetMapping(value="/expandAssignment")
     public String expandAssignment(@ModelAttribute("title") String title, @ModelAttribute("description") String description,
-     @ModelAttribute("deadline") String deadline,Model model, AssignmentTemplate a)
+     @ModelAttribute("deadline") String deadline,Model model, Assignment a)
     {
 
         return service.expandAssignment(title, description,deadline,model,a,assignmentModel);

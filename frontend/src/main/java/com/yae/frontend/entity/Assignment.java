@@ -1,7 +1,10 @@
 package com.yae.frontend.entity;
 
+import java.util.Date;
+import java.util.Map;
+
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 import lombok.AllArgsConstructor;
@@ -18,11 +21,15 @@ import lombok.Setter;
 @Data
 public class Assignment {
     @Id
-    @GeneratedValue
-    public long id;
-    public String title;
-    public String description;
-    public String deadline;
-    public String classAssigned;
-    public String subject;
+    long id;
+    String assignmentTitle;
+    String assignmentDescription;
+    Date assignedDate;
+    Date deadlineDate;
+    long teacher;
+    long classAssigned;
+    @ElementCollection
+    Map<String, Long> submissions;
+    @ElementCollection
+    Map<String, String> testCases;
 }

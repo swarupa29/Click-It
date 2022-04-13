@@ -1,6 +1,7 @@
 package com.yae.frontend.service;
 
 import java.io.IOException;
+import java.util.ArrayList;
 // import java.net.URI;
 // import java.net.http.HttpClient;
 // import java.net.http.HttpRequest;
@@ -15,7 +16,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.yae.frontend.entity.Assignment;
 import com.yae.frontend.entity.Session;
+import com.yae.frontend.model.AssignmentModel;
 import com.yae.frontend.repository.SessionRepository;
+import com.yae.frontend.templates.AssignmentList;
 import com.yae.frontend.templates.AssignmentTemplate;
 import com.yae.frontend.templates.Classroom;
 import com.yae.frontend.templates.Student;
@@ -33,6 +36,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
+import lombok.NoArgsConstructor;
 import net.minidev.json.JSONObject;
 
 @Service
@@ -135,12 +139,14 @@ public class FrontendService {
                         classes=getclasses(classIds);
 
 
-                        Classroom class1= classes.iterator().next();
-                        Set<Long> assignment_ids=class1.getAssignments();
-
+                        Classroom class1= classes.iterator().next();                        
+                        List<Assignment> assignment=getAssignments(class1.getId());
                         //TBD 
-
-                        
+                        List<List<Assignment>> classified= classifyAssignments(assignment,session);
+                        List<Assignment> pending= classified.get(0);
+                        List<Assignment> submitted= classified.get(1);
+                        model.addAttribute("pending",pending);
+                        model.addAttribute("submitted",submitted);                    
                         model.addAttribute("classes", classes);
                         return "index";
                     }
@@ -155,6 +161,35 @@ public class FrontendService {
         }
         
         return "index";
+    }
+
+    public List<List<Assignment>> classifyAssignments(List<Assignment> a,Session session)
+    {
+        List<List<Assignment>> final_list = new ArrayList<>();
+        List<Assignment> submitted=new ArrayList<>();;
+        List<Assignment> pending=new ArrayList<>();
+        ;
+        for(int i=0;i<a.size();i++)
+        {
+            if(a.get(i).getSubmissions().containsKey(session.getUserId()))
+            {
+                submitted.add(a.get(i));
+            }
+            else pending.add(a.get(i));
+
+
+        }
+        final_list.add(pending);
+
+        final_list.add(submitted);
+
+        return final_list;
+    }
+    public List<Assignment> getAssignments(Long Id)
+    {
+        AssignmentList alist= restTemplate.getForObject(environment.getProperty("service_url.assignment")+"/class/"+Id,AssignmentList.class);
+        List<Assignment> a= alist.getAssignments();
+        return a;
     }
 
 
@@ -186,7 +221,7 @@ public class FrontendService {
     }
 
 
-    public String expandAssignment(String title, String description, String deadline,Model model,AssignmentTemplate a, AssignmentModel assignmentModel)
+    public String expandAssignment(String title, String description, String deadline,Model model,Assignment a, AssignmentModel assignmentModel)
     {
         //get assignment files from assignment Service
 
@@ -205,7 +240,7 @@ public class FrontendService {
         //Submission s=new Submission(file);
         ResponseEntity<Integer> mark;
         mark = postForObject(file);
-
+        /*
         String output="Code files have been submitted succesfully";
         java.util.List<Assignment> a = assignmentModel.getAllAssignments();
         model.addAttribute("title",a.get(0).getTitle());
@@ -219,7 +254,7 @@ public class FrontendService {
 
         model.addAttribute("marks",mark.getBody());
 
-
+        */
         return "assignment";
     }
 }
