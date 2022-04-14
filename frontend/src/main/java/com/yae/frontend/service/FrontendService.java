@@ -22,6 +22,7 @@ import com.yae.frontend.templates.AssignmentList;
 import com.yae.frontend.templates.AssignmentTemplate;
 import com.yae.frontend.templates.Classroom;
 import com.yae.frontend.templates.Student;
+import com.yae.frontend.templates.Teacher;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -67,20 +68,33 @@ public class FrontendService {
     }
      
 
-    public String signup(String name,String email,String srn, String password)
+    public String signup(String name,String email,String srn, String password,String usertype )
     {
+        if(usertype=="student")
+        {
+            Student student = new Student();
+            student.setName(name);
+            student.setEmail(email);
+            student.setPassword(password);
+            student.setId(srn);
 
-        Student student = new Student();
-        student.setName(name);
-        student.setEmail(email);
-        student.setPassword(password);
-        student.setId(srn);
+            restTemplate.postForObject(environment.getProperty("service_url.student")+"/save",student,Student.class);
+        }
+        else
+        {
+            Teacher teacher=new Teacher();
+            teacher.setName(name);
+            teacher.setEmail(email);
+            teacher.setPassword(password);
+            teacher.setId(srn);
+            restTemplate.postForObject(environment.getProperty("service_url.teacher")+"/save",teacher,Teacher.class);
 
-        restTemplate.postForObject(environment.getProperty("service_url.student")+"/save",student,Student.class);
+        }
+
         return "login";
     }
       
-    public String login(String srn, HttpServletResponse response) throws IOException{
+    public String login(String srn,String usertype, HttpServletResponse response) throws IOException{
 
         // TODO Fetch Student Object, Validate if exists and then store in session storage.
 
@@ -92,27 +106,46 @@ public class FrontendService {
         response.addCookie(cookie_1);
         response.addCookie(cookie_2);
 
-        System.out.println(environment.getProperty("service_url.student")+"/"+srn);
-        Student student = restTemplate.getForObject(environment.getProperty("service_url.student")+"/"+srn, Student.class);
-        if(student == null) {
-            System.out.println("null");
-            response.sendRedirect(environment.getProperty("service_url.frontend")+"/error");
-            return "login";
+        Session session = new Session();
+
+
+        if(usertype=="student")
+        {
+            System.out.println(environment.getProperty("service_url.student")+"/"+srn);
+            Student student = restTemplate.getForObject(environment.getProperty("service_url.student")+"/"+srn, Student.class);
+            if(student == null) {
+                System.out.println("null");
+                response.sendRedirect(environment.getProperty("service_url.frontend")+"/error");
+                return "login";
+            }
+            session.setClassIds(student.classroomIds);
+            System.out.println("Classroom Ids:" + student.classroomIds);
+
+        }
+        else
+        {
+            Teacher teacher = restTemplate.getForObject(environment.getProperty("service_url.teacher")+"/"+srn, Teacher.class);
+            if(teacher == null) {
+                System.out.println("null");
+                response.sendRedirect(environment.getProperty("service_url.frontend")+"/error");
+                return "login";
+            }
+            session.setClassIds(teacher.classroomIds);
+            System.out.println("Teacher Ids:" + teacher.classroomIds);
         }
         
-        Session session = new Session();
         session.setId(sessionId);
         session.setUserId(srn);
-        session.setClassIds(student.classroomIds);
-        System.out.println("Classroom Ids:" + student.classroomIds);
 
         sessionRepository.save(session);
 
-        response.sendRedirect(environment.getProperty("service_url.frontend")+"/");
+        response.sendRedirect(environment.getProperty("service_url.frontend")+"/"+usertype);
  
         return "login";
         
     }
+
+
 
     
     public String landing(HttpServletRequest request, HttpServletResponse response, Model model){
@@ -138,6 +171,7 @@ public class FrontendService {
                    
 
                     if (session != null) {
+                        System.out.println("Student login");
 
                         Student student = restTemplate.getForObject(environment.getProperty("service_url.student")+"/"+session.getUserId(), Student.class);
 
@@ -177,6 +211,74 @@ public class FrontendService {
         
         return "index";
     }
+
+    public String landingTeacher(HttpServletRequest request, HttpServletResponse response, Model model){
+
+        Cookie [] cookies = request.getCookies();
+
+        if(cookies == null)                 
+        { 
+            try {
+                response.sendRedirect(environment.getProperty("service_url.frontend")+"/login");
+            }
+            catch (IOException e){
+                e.printStackTrace();
+            }
+        }
+
+        else{
+            for (Cookie cookie : cookies) {
+                if ("sessionId".equals(cookie.getName())) {
+                    String sessionId = cookie.getValue();
+                    Session session = sessionRepository.findSessionById(Long.parseLong(sessionId));
+                    
+                   
+
+                    if (session != null) {
+                        System.out.println("Teacher login");
+                        Teacher teacher = restTemplate.getForObject(environment.getProperty("service_url.teacher")+"/"+session.getUserId(), Teacher.class);
+
+                        // NOTE: Update any session data here
+                        session.setClassIds(teacher.classroomIds);
+                        sessionRepository.save(session);
+                        // Fetch List of Classrooms
+                        Set<Long> classIds = session.getClassIds();
+                        System.out.println(classIds);
+                        // classIds.add((long)1);
+                        Set<Classroom> classes =  new HashSet<>();
+
+                        classes=getclasses(classIds);
+
+                        if(classes.size()>0)
+                        {Classroom class1= classes.iterator().next();                        
+                        List<Assignment> assignment=getAssignments(class1.getId());
+                        //TBD 
+                        
+                        model.addAttribute("assignment",assignment);
+                        }                  
+                        model.addAttribute("classes", classes);
+                        return "teacherHome";
+                    }
+                }
+            }
+            try {
+                response.sendRedirect(environment.getProperty("service_url.frontend")+"/login");
+            }
+            catch (IOException e){
+                e.printStackTrace();
+            }
+        }
+        
+        return "teacherHome";
+    }
+
+
+
+
+
+
+
+
 
     public List<List<Assignment>> classifyAssignments(List<Assignment> a,Session session)
     {

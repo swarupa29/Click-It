@@ -33,16 +33,23 @@ public class FrontendController {
     private FrontendService service;
 
     // HOME PAGE
-    @GetMapping("/")
+    @GetMapping({"/student","/"})
     public String landing(HttpServletRequest request, HttpServletResponse response, Model model){
         return service.landing(request, response, model);
+    }
+
+    @GetMapping("/teacher")
+    public String landingTeacher(HttpServletRequest request, HttpServletResponse response, Model model){
+        return service.landingTeacher(request, response, model);
     }
     
     // SUBMIT LOGIN FORM 
     @PostMapping("/login")
-    public String login(@RequestParam("srn") String srn, HttpServletResponse response)
+    public String login(@RequestParam("srn") String srn,@RequestParam("usertype") String usertype, HttpServletResponse response)
     throws IOException {
-        return service.login(srn, response);
+        System.out.println(usertype);
+        
+        return service.login(srn,usertype, response);
     }
 
     //REDIRECT TO SIGNUP PAGE
@@ -54,9 +61,9 @@ public class FrontendController {
 
     //REGISTER STUDENT
     @PostMapping("/signup")
-    public String signupStudent(@RequestParam("name") String name, @RequestParam("email") String email,@RequestParam("srn") String srn,@RequestParam("password") String password)
+    public String signupStudent(@RequestParam("name") String name, @RequestParam("email") String email,@RequestParam("srn") String srn,@RequestParam("password") String password,@RequestParam("usertype") String usertype)
     {
-        return service.signup(name,email,srn,password);
+        return service.signup(name,email,srn,password,usertype);
     }
 
     // LOGIN PAGE

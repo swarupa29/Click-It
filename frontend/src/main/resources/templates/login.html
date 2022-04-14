@@ -23,9 +23,18 @@
                     <form action="login" method="POST">
                       <p>Please login to your account</p>
 
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="usertype" id="inlineRadio1" value="student">
+                        <label class="form-check-label" for="inlineRadio1" >Student</label>
+                      </div>
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="usertype" id="inlineRadio2" value="teacher">
+                        <label class="form-check-label" for="inlineRadio2" >Teacher</label>
+                      </div>
+
                       <div class="form-outline mb-4">
                         <input type="text" id="form2Example11" class="form-control"
-                          placeholder="Your SRN" name="srn" />
+                          placeholder="Your SRN/Teacher ID" name="srn" />
                         <label class="form-label" for="form2Example11">Username</label>
                       </div>
 

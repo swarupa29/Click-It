@@ -17,6 +17,15 @@
                             <h2 class="text-uppercase text-center mb-5">Create an account</h2>
               
                             <form action="signup" method="POST">
+
+                              <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="usertype" id="inlineRadio1" value="student">
+                                <label class="form-check-label" for="inlineRadio1" >Student</label>
+                              </div>
+                              <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="usertype" id="inlineRadio2" value="teacher">
+                                <label class="form-check-label" for="inlineRadio2" >Teacher</label>
+                              </div>
               
                               <div class="form-outline mb-4">
                                 <input type="text" id="name" name="name" class="form-control form-control-lg" />
@@ -30,7 +39,7 @@
               
                               <div class="form-outline mb-4">
                                 <input type="text" id="srn" name="srn" class="form-control form-control-lg" />
-                                <label class="form-label" for="srn">Your SRN</label>
+                                <label class="form-label" for="srn">Your SRN/Teacher</label>
                               </div>
               
                               <div class="form-outline mb-4">
