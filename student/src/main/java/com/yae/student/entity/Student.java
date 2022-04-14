@@ -23,7 +23,7 @@ public class Student {
     @Id
     public String id;
     public String name;
-    public int age;
+    public String password;
     public String email;
 
     @ElementCollection

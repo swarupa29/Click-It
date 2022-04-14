@@ -45,6 +45,20 @@ public class FrontendController {
         return service.login(srn, response);
     }
 
+    //REDIRECT TO SIGNUP PAGE
+    @GetMapping(value="/signup")
+    public String signupPage()
+    {
+        return "signup";
+    }
+
+    //REGISTER STUDENT
+    @PostMapping("/signup")
+    public String signupStudent(@RequestParam("name") String name, @RequestParam("email") String email,@RequestParam("srn") String srn,@RequestParam("password") String password)
+    {
+        return service.signup(name,email,srn,password);
+    }
+
     // LOGIN PAGE
     @GetMapping("/login")
     public String loginPage(){
@@ -116,7 +130,9 @@ public class FrontendController {
     } 
 
     @GetMapping(value="/changeClass")
-    public String changeClass(Model model, @ModelAttribute("name") String name){ return "index";}
+    public String changeClass(Model model, @ModelAttribute("name") String name){ 
+        return service.changeClass(name);
+    }
 
     @PostMapping("/join")
     @ResponseBody

@@ -10,5 +10,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface AssignmentRepository extends JpaRepository<Assignment, Long> {
     Assignment findAssignemntById(Long id);
-    Map<String, Long> getSubmissions();
+    //Map<String, Long> getSubmissions();
 }

@@ -66,6 +66,19 @@ public class FrontendService {
         return restTemplate.postForEntity(url, entity, Integer.class);
     }
      
+
+    public String signup(String name,String email,String srn, String password)
+    {
+
+        Student student = new Student();
+        student.setName(name);
+        student.setEmail(email);
+        student.setPassword(password);
+        student.setId(srn);
+
+        restTemplate.postForObject(environment.getProperty("service_url.student")+"/save",student,Student.class);
+        return "login";
+    }
       
     public String login(String srn, HttpServletResponse response) throws IOException{
 
@@ -82,6 +95,7 @@ public class FrontendService {
         System.out.println(environment.getProperty("service_url.student")+"/"+srn);
         Student student = restTemplate.getForObject(environment.getProperty("service_url.student")+"/"+srn, Student.class);
         if(student == null) {
+            System.out.println("null");
             response.sendRedirect(environment.getProperty("service_url.frontend")+"/error");
             return "login";
         }
@@ -138,15 +152,16 @@ public class FrontendService {
 
                         classes=getclasses(classIds);
 
-
-                        Classroom class1= classes.iterator().next();                        
+                        if(classes.size()>0)
+                        {Classroom class1= classes.iterator().next();                        
                         List<Assignment> assignment=getAssignments(class1.getId());
                         //TBD 
                         List<List<Assignment>> classified= classifyAssignments(assignment,session);
                         List<Assignment> pending= classified.get(0);
                         List<Assignment> submitted= classified.get(1);
                         model.addAttribute("pending",pending);
-                        model.addAttribute("submitted",submitted);                    
+                        model.addAttribute("submitted",submitted);  
+                        }                  
                         model.addAttribute("classes", classes);
                         return "index";
                     }
@@ -256,5 +271,11 @@ public class FrontendService {
 
         */
         return "assignment";
+    }
+
+    public String changeClass(String name){
+
+        return "index";
+
     }
 }

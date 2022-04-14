@@ -21,14 +21,14 @@ public class StudentService {
     public Student saveStudent(StudentTemplate s) {
         String id = s.getId();
         String name = s.getName();
-        int age = s.getAge();
+        String password = s.getPassword();
         String email = s.getEmail();
         HashSet<Long> classIds = new HashSet<>();
 
         Student savedStudent = new Student();
         savedStudent.setId(id);
         savedStudent.setName(name);
-        savedStudent.setAge(age);
+        savedStudent.setPassword(password);
         savedStudent.setEmail(email);
         savedStudent.setClassroomIds(classIds);
 

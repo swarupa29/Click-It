@@ -33,6 +33,7 @@ public class StudentController {
 
     @PostMapping("save")
     Student postMethodName(@RequestBody StudentTemplate s) {
+        System.out.println("saving");
         return studentService.saveStudent(s);
     }
     
