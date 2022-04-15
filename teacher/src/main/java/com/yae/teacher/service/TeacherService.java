@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 
 import com.yae.teacher.entity.Teacher;
 import com.yae.teacher.repository.TeacherRepository;
+import com.yae.teacher.template.Classroom;
 import com.yae.teacher.template.TeacherTemplate;
 import java.util.HashSet;
 
@@ -20,7 +21,7 @@ public class TeacherService {
     }
 
 
-    public Teacher saveTeacher(TeacherTemplate t) {
+    public Teacher saveTeacher(Teacher t) {
         String id = t.getId();
         String name = t.getName();
         String password = t.getPassword();
@@ -36,6 +37,19 @@ public class TeacherService {
         savedTeacher.setClassroomIds(classIds);
 
         return teacherRepository.save(savedTeacher);
+    }
+
+    public String updateTeacher(String id, Classroom c) 
+    {
+        Teacher teacher= findTeacherById(id);
+        System.out.println("inside teacher ms: id passed is");
+        System.out.println(c.getId());
+        teacher.ClassroomIds.add(c.getId());
+        //Teacher t2=teacherService.saveTeacher(teacher);
+        Teacher t2=teacherRepository.save(teacher);
+        System.out.println("insede teacher after saving");
+        System.out.println(t2.getClassroomIds());
+        return "Success";
     }
     
 }

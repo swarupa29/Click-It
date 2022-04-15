@@ -2,7 +2,7 @@ package com.yae.teacher.controller;
 
 import com.yae.teacher.entity.Teacher;
 import com.yae.teacher.service.TeacherService;
-import com.yae.teacher.template.TeacherTemplate;
+import com.yae.teacher.template.Classroom;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,9 +26,17 @@ public class TeacherController {
     }
 
     @PostMapping("save")
-    Teacher postMethodName(@RequestBody TeacherTemplate s) {
+    Teacher postMethodName(@RequestBody Teacher s) {
         System.out.println("saving");
         return teacherService.saveTeacher(s);
+    }
+
+    @PostMapping("addClass/{id}")
+    String addClass(@PathVariable String id,@RequestBody Classroom c) 
+    {
+
+        return teacherService.updateTeacher(id,c);
+                
     }
     
 }

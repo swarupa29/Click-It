@@ -237,7 +237,8 @@ public class FrontendService {
                     if (session != null) {
                         System.out.println("Teacher login");
                         Teacher teacher = restTemplate.getForObject(environment.getProperty("service_url.teacher")+"/"+session.getUserId(), Teacher.class);
-
+                        System.out.println("Teacher list of class ids");
+                        System.out.println(teacher.getClassroomIds());
                         // NOTE: Update any session data here
                         session.setClassIds(teacher.classroomIds);
                         sessionRepository.save(session);
@@ -381,14 +382,16 @@ public class FrontendService {
 
     }
 
-    public void createClass(String className,HttpServletResponse response) throws IOException
+    public void createClass(String teacherId,String className,HttpServletResponse response) throws IOException
     {
         Classroom class1=new Classroom();
         class1.setName(className);
+        class1.setTeacherId(teacherId);
         //class.setName(className);
         Classroom class2=restTemplate.postForObject(environment.getProperty("service_url.classroom")+"/save", class1, Classroom.class);
         System.out.println(class2.getId());
-        
+        String res=restTemplate.postForObject(environment.getProperty("service_url.teacher")+"/addClass/"+teacherId,class2, String.class);
+        System.out.println(res);
         response.sendRedirect(environment.getProperty("service_url.frontend")+"/teacher");
 
 

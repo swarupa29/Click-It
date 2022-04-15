@@ -7,6 +7,6 @@ import lombok.Setter;
 @Setter
 public class ClassroomTemplate {
     String name;
-    Long teacherId;
+    String teacherId;
     Long taId;
 }

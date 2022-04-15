@@ -1,17 +1,14 @@
-package com.yae.frontend.templates;
+package com.yae.teacher.template;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import java.util.*;
+import java.util.List;
 
 import javax.persistence.ElementCollection;
 
-@Setter
+import lombok.Getter;
+import lombok.Setter;
+
 @Getter
-@NoArgsConstructor
-@AllArgsConstructor
+@Setter
 public class Classroom {
     Long id;
     String name;
@@ -24,4 +21,5 @@ public class Classroom {
 
     String teacherId;
     Long taId;
+    
 }

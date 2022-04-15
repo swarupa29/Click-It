@@ -159,11 +159,11 @@ public class FrontendController {
     }
 
     @PostMapping("/createClass")
-    public void createClass(@RequestParam("classId") String className,HttpServletResponse response) throws IOException
+    public void createClass(@CookieValue String userId,@RequestParam("classId") String className,HttpServletResponse response) throws IOException
     {
         //call save using class service 
         System.out.println(className);
-        service.createClass(className,response);
+        service.createClass(userId,className,response);
        // teacherhome();
         //return "teacherHome";
     }

@@ -3,6 +3,7 @@ package com.yae.assignment.controller;
 import java.text.ParseException;
 import java.util.List;
 
+import com.yae.assignment.RESTTemplates.AssignmentList;
 import com.yae.assignment.RESTTemplates.AssignmentTemplate;
 import com.yae.assignment.entity.Assignment;
 import com.yae.assignment.service.AssignmentService;
@@ -47,8 +48,11 @@ public class AssignmentController {
     }
 
     @GetMapping("class/{classId}")
-    List<Assignment> findAllAssignmentByClass(@PathVariable long classId) {
-        return assignmentService.findAllAssignmentByClass(classId);
+    AssignmentList findAllAssignmentByClass(@PathVariable long classId) {
+
+        List<Assignment>a2= assignmentService.findAllAssignmentByClass(classId);
+        AssignmentList res= new AssignmentList(a2);
+        return res;
     }
 
      @PostMapping("submit/{assignmentId}/{submissionId}/{studentId}")

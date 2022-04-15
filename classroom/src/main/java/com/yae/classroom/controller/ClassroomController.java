@@ -35,12 +35,12 @@ public class ClassroomController {
     Classroom save(@RequestBody ClassroomTemplate s) {
         System.out.println("in savwe");
         String name = s.getName();
-        //long teacherId = s.getTeacherId();
+        String teacherId = s.getTeacherId();
         //long taId = s.getTaId();
 
         Classroom c = new Classroom();
         c.setName(name);
-        //c.setTeacherId(teacherId);
+        c.setTeacherId(teacherId);
         //c.setTaId(taId);
         c.setAssignments(new ArrayList<>());
         c.setStudents(new ArrayList<>());

@@ -29,6 +29,6 @@ public class Classroom {
     @ElementCollection
     List<Long> assignments;
 
-    Long teacherId;
+    String teacherId;
     Long taId;
 }

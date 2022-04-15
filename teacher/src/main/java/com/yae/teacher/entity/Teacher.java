@@ -26,5 +26,5 @@ public class Teacher {
     public String email;
     
     @ElementCollection
-    Set<Long> ClassroomIds;
+    public Set<Long> ClassroomIds;
 }
