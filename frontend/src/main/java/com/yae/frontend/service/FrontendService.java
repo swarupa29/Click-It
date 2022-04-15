@@ -380,4 +380,17 @@ public class FrontendService {
         return "index";
 
     }
+
+    public void createClass(String className,HttpServletResponse response) throws IOException
+    {
+        Classroom class1=new Classroom();
+        class1.setName(className);
+        //class.setName(className);
+        Classroom class2=restTemplate.postForObject(environment.getProperty("service_url.classroom")+"/save", class1, Classroom.class);
+        System.out.println(class2.getId());
+        
+        response.sendRedirect(environment.getProperty("service_url.frontend")+"/teacher");
+
+
+    }
 }
