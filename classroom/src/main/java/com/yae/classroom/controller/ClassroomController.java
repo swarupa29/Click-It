@@ -33,14 +33,15 @@ public class ClassroomController {
 
     @PostMapping("save")
     Classroom save(@RequestBody ClassroomTemplate s) {
+        System.out.println("in savwe");
         String name = s.getName();
-        long teacherId = s.getTeacherId();
-        long taId = s.getTaId();
+        //long teacherId = s.getTeacherId();
+        //long taId = s.getTaId();
 
         Classroom c = new Classroom();
         c.setName(name);
-        c.setTeacherId(teacherId);
-        c.setTaId(taId);
+        //c.setTeacherId(teacherId);
+        //c.setTaId(taId);
         c.setAssignments(new ArrayList<>());
         c.setStudents(new ArrayList<>());
         return classroomService.save(c);

@@ -6,16 +6,21 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import java.util.*;
 
-@AllArgsConstructor
-@NoArgsConstructor
-@Getter
+import javax.persistence.ElementCollection;
+
 @Setter
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Classroom {
     Long id;
     String name;
 
-    Set<Long> students;
-    Set<Long> assignments;
+    @ElementCollection
+    List<Long> students;
+
+    @ElementCollection
+    List<Long> assignments;
 
     Long teacherId;
     Long taId;

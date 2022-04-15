@@ -159,13 +159,13 @@ public class FrontendController {
     }
 
     @PostMapping("/createClass")
-    public String createClass(@RequestParam("classId") String className)
+    public void createClass(@RequestParam("classId") String className,HttpServletResponse response) throws IOException
     {
         //call save using class service 
         System.out.println(className);
-
+        service.createClass(className,response);
        // teacherhome();
-        return "teacherHome";
+        //return "teacherHome";
     }
     
 }
