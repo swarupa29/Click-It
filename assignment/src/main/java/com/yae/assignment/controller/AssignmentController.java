@@ -32,8 +32,9 @@ public class AssignmentController {
         return assignmentService.findAssignmentById(id);
     }
 
-    @PostMapping("save")
-    Assignment saveAssignment(@RequestBody AssignmentTemplate s) throws ParseException {
+    @PostMapping("/save")
+    Assignment saveAssignment(@RequestBody AssignmentTemplate s) {
+        System.out.println("in save");
         return assignmentService.saveAssignment(s);
     }
 

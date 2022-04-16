@@ -2,8 +2,6 @@ package com.yae.frontend.templates;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.yae.frontend.entity.Assignment;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;

@@ -1,25 +1,29 @@
 package com.yae.frontend.service;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 // import java.net.URI;
 // import java.net.http.HttpClient;
 // import java.net.http.HttpRequest;
 // import java.net.http.HttpResponse;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.yae.frontend.entity.Assignment;
 import com.yae.frontend.entity.Session;
-import com.yae.frontend.model.AssignmentModel;
 import com.yae.frontend.repository.SessionRepository;
+import com.yae.frontend.templates.Assignment;
 import com.yae.frontend.templates.AssignmentList;
-import com.yae.frontend.templates.AssignmentTemplate;
 import com.yae.frontend.templates.Classroom;
 import com.yae.frontend.templates.Student;
 import com.yae.frontend.templates.Teacher;
@@ -339,18 +343,18 @@ public class FrontendService {
     }
 
 
-    public String expandAssignment(String title, String description, String deadline,Model model,Assignment a, AssignmentModel assignmentModel)
+    public String expandAssignment(String title, String description, String deadline,Model model)
     {
         //get assignment files from assignment Service
 
-        assignmentModel.saveAssignment(a);
+        //assignmentModel.saveAssignment(a);
         model.addAttribute("result","");
         model.addAttribute("marks","NA");
 
         return "assignment";
     }
 
-    public String submitAssignment(MultipartFile file, Model model, AssignmentModel assignmentModel)
+    public String submitAssignment(MultipartFile file, Model model)
     {
         //make call to the ms to submit the file
         //String output = submissionService.saveSubmission(file);
@@ -395,5 +399,35 @@ public class FrontendService {
         response.sendRedirect(environment.getProperty("service_url.frontend")+"/teacher");
 
 
+    }
+
+    public String addAssignment(Map<String,String> body,HttpServletResponse response) throws ParseException,IOException 
+        {
+        String title= body.get("title");
+        String desc=body.get("description");
+        SimpleDateFormat inFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
+        Date deadline=inFormat.parse(body.get("deadline"));
+        int classid=Integer.parseInt(body.get("classid"));
+        Map<String,String> tc = new HashMap<String,String>();
+        int index = 0;
+        for (String key : body.keySet()) {
+            if (index++ < 4 )
+             {continue; }
+            //if(key.startsWith("input"))
+            tc.put(key, body.get(key));
+            //else if(key.startsWith("output"))
+             //   tc.put(key, body.get(key));
+   
+        }
+        Assignment a = new Assignment();
+        a.setAssignmentTitle(title);
+        a.setAssignmentDescription(desc);
+        a.setDeadlineDate(deadline);
+        a.setClassAssigned(classid);
+        a.setTestCases(tc);
+
+        Assignment a2=restTemplate.postForObject(environment.getProperty("service_url.assignment")+"/save", a, Assignment.class);
+        response.sendRedirect(environment.getProperty("service_url.frontend")+"/teacher");
+        return "Success";
     }
 }

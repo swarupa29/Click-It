@@ -23,14 +23,14 @@ public class AssignmentService {
         return assignmentRepository.findAssignmentById(id);
     }
 
-    public Assignment saveAssignment(AssignmentTemplate s) throws ParseException {
+    public Assignment saveAssignment(AssignmentTemplate s)  {
         
-        SimpleDateFormat f = new SimpleDateFormat("dd-mm-yyyy");
+        //SimpleDateFormat f = new SimpleDateFormat("dd-mm-yyyy");
 
         String assignmentTitle = s.getAssignmentTitle();
         String assignmentDescription = s.getAssignmentDescription();
         Date assignedDate = new Date();
-        Date deadlineDate = f.parse(s.getDeadlineDate());
+        Date deadlineDate = s.getDeadlineDate();
         long teacher = s.getTeacher();
         long classAssigned = s.getClassAssigned();
         Map<String, Long> submissions = new HashMap<String, Long>();
@@ -50,11 +50,11 @@ public class AssignmentService {
 
     public Assignment updateAssignment(long id, AssignmentTemplate s) throws ParseException {
 
-        SimpleDateFormat f = new SimpleDateFormat("dd-mm-yyyy");
+        //SimpleDateFormat f = new SimpleDateFormat("dd-mm-yyyy");
         
         String assignmentTitle = s.getAssignmentTitle();
         String assignmentDescription = s.getAssignmentDescription();
-        Date deadlineDate = f.parse(s.getDeadlineDate());
+        Date deadlineDate = s.getDeadlineDate();
         long teacher = s.getTeacher();
         long classAssigned = s.getClassAssigned();
 

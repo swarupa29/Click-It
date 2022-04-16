@@ -1,13 +1,15 @@
 package com.yae.frontend.controller;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.text.ParseException;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.yae.frontend.entity.Assignment;
-import com.yae.frontend.model.AssignmentModel;
 import com.yae.frontend.service.FrontendService;
+import com.yae.frontend.templates.Assignment;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -26,8 +28,6 @@ import org.springframework.web.multipart.MultipartFile;
 @Controller
 public class FrontendController {
 
-    @Autowired
-    private AssignmentModel assignmentModel;
    
     @Autowired
     private FrontendService service;
@@ -118,10 +118,10 @@ public class FrontendController {
 
     @GetMapping(value="/expandAssignment")
     public String expandAssignment(@ModelAttribute("title") String title, @ModelAttribute("description") String description,
-     @ModelAttribute("deadline") String deadline,Model model, Assignment a)
+     @ModelAttribute("deadline") String deadline,Model model)
     {
 
-        return service.expandAssignment(title, description,deadline,model,a,assignmentModel);
+        return service.expandAssignment(title, description,deadline,model);
        
     }
 
@@ -132,7 +132,7 @@ public class FrontendController {
         Model model)
     {    
 
-        return service.submitAssignment(file,model,assignmentModel);
+       return service.submitAssignment(file,model);
         
     } 
 
@@ -166,6 +166,14 @@ public class FrontendController {
         service.createClass(userId,className,response);
        // teacherhome();
         //return "teacherHome";
+    }
+
+
+    @PostMapping("/saveAssignment")
+    public void addAssignment(@RequestParam Map<String,String> body,HttpServletResponse response) throws ParseException,IOException
+    {
+        //return service.saveAssignment();IOUtils.toString
+        service.addAssignment(body,response);
     }
     
 }

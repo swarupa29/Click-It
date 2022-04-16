@@ -1,4 +1,4 @@
-package com.yae.frontend.entity;
+package com.yae.frontend.templates;
 
 import java.util.Date;
 import java.util.Map;
