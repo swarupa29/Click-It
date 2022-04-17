@@ -173,8 +173,23 @@ public class FrontendController {
     public void addAssignment(@RequestParam Map<String,String> body,HttpServletResponse response) throws ParseException,IOException
     {
         //return service.saveAssignment();IOUtils.toString
+        System.out.println("save controller");
         service.addAssignment(body,response);
     }
+
+    @GetMapping("/expandAssignmentTeacher")
+    public String expandAssignmentTeacher(@RequestParam("id") Long id,Model model)
+    {
+        return service.expandAssignmentTeacher(id,model);
+    }
+
+    @GetMapping("/goback")
+    public void goback(HttpServletResponse response) throws IOException
+    {
+        //response.sendRedirect(environment.getProperty("service_url.frontend")+"/login");
+        service.goback(response);
+    }
+
     
 }
 

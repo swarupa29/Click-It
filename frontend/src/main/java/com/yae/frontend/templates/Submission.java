@@ -1,7 +1,8 @@
 package com.yae.frontend.templates;
 
-import java.io.File;
 
+
+import javax.persistence.Id;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,9 +13,12 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class SubmissionTemplate {
-    public File testcase;
-    public boolean plagarismReport;
-    public double marks;
+public class Submission {
+    @Id
+    public Long id;
+    public String name;
+    public String srn;
+    public String output;
+    public Long assignmentId;
     
 }

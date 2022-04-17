@@ -49,8 +49,9 @@
 
                 <div class="assignments" id="pending" style="display:block;">
                     <ul class="assign d-grid gap-4" th:each="assignment : ${assignment}">
-                        <a th:href="@{/expandAssignmentTeacher(title=${assignment.AssignmentTitle}, description=${assignment.AssignmentDescription}, deadline=${assignment.deadlineDate})}">
+                        <a th:href="@{/expandAssignmentTeacher(id=${assignment.id})}">
                         <ul class="list-group list-group-horizontal assignment-card" >
+                            <li class="list-group-item topic" th:text="${assignment.id}"></li>
                             <li class="list-group-item topic" th:text="${assignment.assignmentTitle}"></li>
                             <li class="list-group-item dl" th:text="${assignment.deadlineDate}"></li>
                         </ul>                        

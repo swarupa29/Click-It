@@ -11,7 +11,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class Submission {
+public class SubmitFile {
     MultipartFile subfile;
     
 }

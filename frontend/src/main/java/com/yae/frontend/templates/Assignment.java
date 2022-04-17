@@ -21,7 +21,7 @@ import lombok.Setter;
 @Data
 public class Assignment {
     @Id
-    long id;
+    Long id;
     String assignmentTitle;
     String assignmentDescription;
     Date assignedDate;

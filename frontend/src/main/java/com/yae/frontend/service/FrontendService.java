@@ -26,6 +26,7 @@ import com.yae.frontend.templates.Assignment;
 import com.yae.frontend.templates.AssignmentList;
 import com.yae.frontend.templates.Classroom;
 import com.yae.frontend.templates.Student;
+import com.yae.frontend.templates.Submission;
 import com.yae.frontend.templates.Teacher;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -311,6 +312,8 @@ public class FrontendService {
     {
         AssignmentList alist= restTemplate.getForObject(environment.getProperty("service_url.assignment")+"/class/"+Id,AssignmentList.class);
         List<Assignment> a= alist.getAssignments();
+        if(a.size()!=0)
+        System.out.println(a.get(0));
         return a;
     }
 
@@ -429,5 +432,31 @@ public class FrontendService {
         Assignment a2=restTemplate.postForObject(environment.getProperty("service_url.assignment")+"/save", a, Assignment.class);
         response.sendRedirect(environment.getProperty("service_url.frontend")+"/teacher");
         return "Success";
+    }
+
+    public String expandAssignmentTeacher(Long id,Model model){
+
+        Assignment a = restTemplate.getForObject(environment.getProperty("service_url.assignment")+"/id/"+id, Assignment.class);
+        Map<String, Long> submissions= a.getSubmissions();
+        List<Submission> sublist = new ArrayList<Submission>();
+
+        for(String key : submissions.keySet()){
+            sublist.add(getSubmission(submissions.get(key)));
+        }
+        model.addAttribute("submission", sublist);
+        model.addAttribute("title",a.getAssignmentTitle());
+
+        return "expandAssignment";
+    }
+
+    public Submission getSubmission(Long id)
+    {
+        return restTemplate.getForObject(environment.getProperty("service_url.assignment")+id, Submission.class);
+
+    }
+
+    public void goback(HttpServletResponse response) throws IOException
+    {
+        response.sendRedirect(environment.getProperty("service_url.frontend")+"/teacher");
     }
 }
