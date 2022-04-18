@@ -34,7 +34,7 @@ public class FrontendController {
 
     // HOME PAGE
     @GetMapping({"/student","/"})
-    public String landing(HttpServletRequest request, HttpServletResponse response, Model model){
+    public String landing(HttpServletRequest request, HttpServletResponse response, Model model,Long cid){
         return service.landing(request, response, model);
     }
 
@@ -137,8 +137,8 @@ public class FrontendController {
     } 
 
     @GetMapping(value="/changeClass")
-    public String changeClass(Model model, @ModelAttribute("id") Long id){ 
-        return service.changeClass(id);
+    public String changeClass(HttpServletRequest request, HttpServletResponse response,@ModelAttribute("id") Long id) throws IOException{ 
+        return service.changeClass(request,response,id);
     }
 
     @PostMapping("/join")

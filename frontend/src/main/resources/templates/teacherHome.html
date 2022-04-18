@@ -22,27 +22,33 @@
                     Click.it
                 </div>
             </div>
-          </nav>
+        </nav>
        
         <div class="row ">
             <div class="lhs col-md-3">
+
                 <h2 class="list-header" style="padding-bottom:20px;padding-top:20px;padding-right:20px;">Classes</h2 >
-                <ul class=" classes d-grid gap-3" th:each="class : ${classes}">
-                    <ul class="list-group list-group-horizontal class-card" >
+                <div>
+                    <ul class=" classes d-grid gap-3" th:each="class : ${classes}">
                         <a th:href="@{/changeClass(id=${class.id})}">
-                        <li class="list-group-item" th:text="${class.name}"></li>
-                        <li class="list-group-item" th:text="${class.id}"></li>
+
+                        <ul class="list-group list-group-horizontal class-card" >
+                            <li class="list-group-item" th:text="${class.name}"></li>
+                            <li class="list-group-item" th:text="${class.id}"></li>
+                        </ul>
+                        </a>
                     </ul>
-                </ul>
-                <h4 class="add-class">Create class</h4>
+                </div>
+                <div>
+                    <h4 class="add-class">Create class</h4>
 
-                <form th:action="@{/createClass}" method="POST">
+                    <form th:action="@{/createClass}" method="POST">
                     <div class="input-group mb-3" style="padding:30px;">
-                        <button class="btn btn-outline-secondary" style="background-color:#3bba9c; color: white" type="submit" id="button-addon1">+</button>
                         <input type="text" class="form-control"  placeholder="Class Name" aria-label="Example text with button addon" aria-describedby="button-addon1" name="classId">
+                        <button class="btn btn-outline-secondary" style="background-color:#3bba9c; color: white" type="submit" id="button-addon1">+</button>
                     </div>
-                </form>
-
+                    </form>
+                </div>
 
             </div>
             

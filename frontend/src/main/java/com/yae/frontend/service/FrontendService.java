@@ -54,8 +54,6 @@ public class FrontendService {
     @Autowired
     private Environment environment;
 
-    private int flag=0;
-
     private final RestTemplate restTemplate = new RestTemplate();
 
     public ResponseEntity<Integer> postForObject(MultipartFile file) {
@@ -129,7 +127,8 @@ public class FrontendService {
             session.setClassIds(student.classroomIds);
             session.setIsStudent(true);
             System.out.println("setting student");
-
+            long a=-1;
+            session.setClassId(a);
             System.out.println(session.getIsStudent());
             System.out.println("Classroom Ids:" + student.classroomIds);
 
@@ -144,6 +143,8 @@ public class FrontendService {
             }
             session.setClassIds(teacher.classroomIds);
             session.setIsStudent(false);
+            long a=-1;
+            session.setClassId(a);
             System.out.println("Teacher Ids:" + teacher.classroomIds);
         }
         
@@ -201,9 +202,13 @@ public class FrontendService {
 
                         if(classes.size()>0)
                         {
-
-                            Classroom class1= classes.iterator().next();  
-                            session.setClassId(class1.getId());                      
+                            if(session.getClassId()==-1)
+                            {
+                                Classroom class1= classes.iterator().next();
+                                session.setClassId(class1.getId());
+                            }
+                              
+                            session.setClassId(session.getClassId());                      
                         List<Assignment> assignment=getAssignments(session.getClassId());
                         //TBD 
                         List<List<Assignment>> classified= classifyAssignments(assignment,session);
@@ -252,9 +257,9 @@ public class FrontendService {
 
                     if (session != null && !session.getIsStudent()) {
                         System.out.println("Teacher login");
+                        System.out.println("session id inside teacher is");
+                    System.out.println(session.getClassId());
                         Teacher teacher = restTemplate.getForObject(environment.getProperty("service_url.teacher")+"/"+session.getUserId(), Teacher.class);
-                        System.out.println("Teacher list of class ids");
-                        System.out.println(teacher.getClassroomIds());
                         // NOTE: Update any session data here
                         session.setClassIds(teacher.classroomIds);
                         sessionRepository.save(session);
@@ -267,11 +272,16 @@ public class FrontendService {
                         classes=getclasses(classIds);
 
                         if(classes.size()>0)
-                        {Classroom class1= classes.iterator().next();                        
-                        List<Assignment> assignment=getAssignments(class1.getId());
+                        {
+                            if(session.getClassId()==-1)
+                            {
+                                Classroom class1= classes.iterator().next();
+                                session.setClassId(class1.getId());                 
+                            }
                         //TBD 
-                        
-                        model.addAttribute("assignment",assignment);
+                                                        
+                            List<Assignment> assignment=getAssignments(session.getClassId());
+                            model.addAttribute("assignment",assignment);
                         }                  
                         model.addAttribute("classes", classes);
                         return "teacherHome";
@@ -323,8 +333,6 @@ public class FrontendService {
     {
         AssignmentList alist= restTemplate.getForObject(environment.getProperty("service_url.assignment")+"/class/"+Id,AssignmentList.class);
         List<Assignment> a= alist.getAssignments();
-        if(a.size()!=0)
-        System.out.println(a.get(0));
         return a;
     }
 
@@ -394,7 +402,34 @@ public class FrontendService {
         return "assignment";
     }
 
-    public String changeClass(Long id){
+    public String changeClass(HttpServletRequest request,HttpServletResponse response,Long id) throws IOException{
+
+        Cookie [] cookies = request.getCookies();
+        if(cookies == null)                 
+        { 
+            try {
+                response.sendRedirect(environment.getProperty("service_url.frontend")+"/login");
+            }
+            catch (IOException e){
+                e.printStackTrace();
+            }
+        }
+        else{
+            for (Cookie cookie : cookies) {
+                if ("sessionId".equals(cookie.getName())) {
+                    String sessionId = cookie.getValue();
+                    Session session = sessionRepository.findSessionById(Long.parseLong(sessionId));
+                    session.setClassId(id);
+                    sessionRepository.save(session);
+                    System.out.println("in change class, setting id");
+                    if(session.getIsStudent())
+                    {
+                        response.sendRedirect(environment.getProperty("service_url.frontend")+"/student");
+                    }
+                    else         response.sendRedirect(environment.getProperty("service_url.frontend")+"/teacher");
+                }
+            }
+        }
 
 
         return "index";
