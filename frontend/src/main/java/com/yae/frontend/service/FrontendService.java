@@ -11,9 +11,12 @@ import java.util.HashMap;
 // import java.net.http.HttpRequest;
 // import java.net.http.HttpResponse;
 import java.util.HashSet;
+<<<<<<< HEAD
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+=======
+>>>>>>> 9c66d39 (something)
 import java.util.Set;
 
 import javax.servlet.http.Cookie;
@@ -103,7 +106,6 @@ public class FrontendService {
       
     public String login(String srn,String usertype, HttpServletResponse response) throws IOException{
 
-        // TODO Fetch Student Object, Validate if exists and then store in session storage.
 
         Long sessionId = Math.round(Math.random()*100);
         Cookie cookie_1 = new Cookie("userId", srn);

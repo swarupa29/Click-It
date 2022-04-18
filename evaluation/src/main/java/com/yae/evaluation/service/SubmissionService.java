@@ -7,17 +7,21 @@ import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.HashMap;
 import java.util.List;
 
+import com.yae.evaluation.RESTTemplates.AssignmentTemplate;
 import com.yae.evaluation.RESTTemplates.UploadTemplate;
 import com.yae.evaluation.entity.Submission;
 import com.yae.evaluation.repository.SubmissionRepository;
 import com.yae.evaluation.utils.FileUtils;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -27,9 +31,36 @@ public class SubmissionService {
 
     @Autowired
     private SubmissionRepository submissionRepository;
-     
+    
+    private RestTemplate restTemplate;
+
+    @Autowired
+    private Environment environment;
+
     public Submission findSubmissionById(Long id) {
         return submissionRepository.findSubmissionById(id);
+    }
+
+    public String getScore(Path tmp, HashMap<String, String> testCases) throws IOException{
+        int score=0;
+        for(String testCaseInput: testCases.keySet()) 
+        {
+            String command = String.format("echo %s | python %s", testCaseInput, tmp);
+			Process process = Runtime.getRuntime().exec(command);
+
+			BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+			String line;
+			String testCaseOutput = new String("");
+
+			while ((line = reader.readLine()) != null) {
+				testCaseOutput+= line+"\n";
+			}
+
+            if (testCaseOutput == testCases.get(testCaseInput)) score++;
+			reader.close();
+        }
+		
+        return Integer.toString(score);
     }
 
     public Submission saveSubmission(String name, String srn, Long assignmentId, MultipartFile file){
@@ -44,18 +75,10 @@ public class SubmissionService {
 			iStream.close();
 			System.out.println("Saved file to " + tmp);
 
-			String command = String.format("python %s", tmp);
-			Process process = Runtime.getRuntime().exec(command);
+            			
+            AssignmentTemplate assignment = restTemplate.getForObject(environment.getProperty("service_url.assignment"), AssignmentTemplate.class);
+            String output = getScore(tmp, assignment.getTestCases());
 
-			BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-			String line;
-			String output = new String("");
-
-			while ((line = reader.readLine()) != null) {
-				output += line+"\n";
-			}
-			reader.close();
-			
 			Submission s = new Submission();
             s.setName(name);
             s.setOutput(output);
