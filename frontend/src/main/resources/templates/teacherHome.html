@@ -29,6 +29,7 @@
                 <h2 class="list-header" style="padding-bottom:20px;padding-top:20px;padding-right:20px;">Classes</h2 >
                 <ul class=" classes d-grid gap-3" th:each="class : ${classes}">
                     <ul class="list-group list-group-horizontal class-card" >
+                        <a th:href="@{/changeClass(id=${class.id})}">
                         <li class="list-group-item" th:text="${class.name}"></li>
                         <li class="list-group-item" th:text="${class.id}"></li>
                     </ul>

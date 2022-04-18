@@ -20,7 +20,7 @@ public class Session {
     String userId;
     String name;
     String email;
-
+    Long classId;
     @ElementCollection
     Set<Long> classIds;
     // Set<String> classNames;

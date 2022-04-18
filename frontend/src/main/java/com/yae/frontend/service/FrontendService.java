@@ -54,6 +54,8 @@ public class FrontendService {
     @Autowired
     private Environment environment;
 
+    private int flag=0;
+
     private final RestTemplate restTemplate = new RestTemplate();
 
     public ResponseEntity<Integer> postForObject(MultipartFile file) {
@@ -192,8 +194,10 @@ public class FrontendService {
                         classes=getclasses(classIds);
 
                         if(classes.size()>0)
-                        {Classroom class1= classes.iterator().next();                        
-                        List<Assignment> assignment=getAssignments(class1.getId());
+                        {
+                            Classroom class1= classes.iterator().next();  
+                            session.setClassId(class1.getId());                      
+                        List<Assignment> assignment=getAssignments(session.getClassId());
                         //TBD 
                         List<List<Assignment>> classified= classifyAssignments(assignment,session);
                         List<Assignment> pending= classified.get(0);
@@ -383,7 +387,8 @@ public class FrontendService {
         return "assignment";
     }
 
-    public String changeClass(String name){
+    public String changeClass(Long id){
+
 
         return "index";
 

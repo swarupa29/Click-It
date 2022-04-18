@@ -137,8 +137,8 @@ public class FrontendController {
     } 
 
     @GetMapping(value="/changeClass")
-    public String changeClass(Model model, @ModelAttribute("name") String name){ 
-        return service.changeClass(name);
+    public String changeClass(Model model, @ModelAttribute("id") Long id){ 
+        return service.changeClass(id);
     }
 
     @PostMapping("/join")
