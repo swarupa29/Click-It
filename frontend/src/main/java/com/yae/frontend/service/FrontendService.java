@@ -11,12 +11,9 @@ import java.util.HashMap;
 // import java.net.http.HttpRequest;
 // import java.net.http.HttpResponse;
 import java.util.HashSet;
-<<<<<<< HEAD
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-=======
->>>>>>> 9c66d39 (something)
 import java.util.Set;
 
 import javax.servlet.http.Cookie;
@@ -80,7 +77,7 @@ public class FrontendService {
 
     public String signup(String name,String email,String srn, String password,String usertype )
     {
-        if(usertype=="student")
+        if(usertype.equals("student"))
         {
             Student student = new Student();
             student.setName(name);
@@ -106,7 +103,7 @@ public class FrontendService {
       
     public String login(String srn,String usertype, HttpServletResponse response) throws IOException{
 
-
+        System.out.println("login");
         Long sessionId = Math.round(Math.random()*100);
         Cookie cookie_1 = new Cookie("userId", srn);
         Cookie cookie_2 = new Cookie("sessionId", Long.toString(sessionId));
@@ -118,16 +115,22 @@ public class FrontendService {
         Session session = new Session();
 
 
-        if(usertype=="student")
+        if(usertype.equals("student"))
         {
+            System.out.println("student if");
+
             System.out.println(environment.getProperty("service_url.student")+"/"+srn);
             Student student = restTemplate.getForObject(environment.getProperty("service_url.student")+"/"+srn, Student.class);
             if(student == null) {
-                System.out.println("null");
+                System.out.println(" student is null");
                 response.sendRedirect(environment.getProperty("service_url.frontend")+"/error");
                 return "login";
             }
             session.setClassIds(student.classroomIds);
+            session.setIsStudent(true);
+            System.out.println("setting student");
+
+            System.out.println(session.getIsStudent());
             System.out.println("Classroom Ids:" + student.classroomIds);
 
         }
@@ -140,6 +143,7 @@ public class FrontendService {
                 return "login";
             }
             session.setClassIds(teacher.classroomIds);
+            session.setIsStudent(false);
             System.out.println("Teacher Ids:" + teacher.classroomIds);
         }
         
@@ -177,9 +181,9 @@ public class FrontendService {
                     String sessionId = cookie.getValue();
                     Session session = sessionRepository.findSessionById(Long.parseLong(sessionId));
                     
-                   
+                   System.out.println(session);
 
-                    if (session != null) {
+                    if (session != null && session.getIsStudent()) {
                         System.out.println("Student login");
 
                         Student student = restTemplate.getForObject(environment.getProperty("service_url.student")+"/"+session.getUserId(), Student.class);
@@ -197,6 +201,7 @@ public class FrontendService {
 
                         if(classes.size()>0)
                         {
+
                             Classroom class1= classes.iterator().next();  
                             session.setClassId(class1.getId());                      
                         List<Assignment> assignment=getAssignments(session.getClassId());
@@ -245,7 +250,7 @@ public class FrontendService {
                     
                    
 
-                    if (session != null) {
+                    if (session != null && !session.getIsStudent()) {
                         System.out.println("Teacher login");
                         Teacher teacher = restTemplate.getForObject(environment.getProperty("service_url.teacher")+"/"+session.getUserId(), Teacher.class);
                         System.out.println("Teacher list of class ids");
