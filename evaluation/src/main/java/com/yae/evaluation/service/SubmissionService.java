@@ -1,14 +1,16 @@
 package com.yae.evaluation.service;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.yae.evaluation.RESTTemplates.AssignmentTemplate;
 import com.yae.evaluation.RESTTemplates.UploadTemplate;
@@ -32,7 +34,7 @@ public class SubmissionService {
     @Autowired
     private SubmissionRepository submissionRepository;
     
-    private RestTemplate restTemplate;
+    private RestTemplate restTemplate = new RestTemplate();
 
     @Autowired
     private Environment environment;
@@ -41,12 +43,19 @@ public class SubmissionService {
         return submissionRepository.findSubmissionById(id);
     }
 
-    public String getScore(Path tmp, HashMap<String, String> testCases) throws IOException{
+    public String getScore(Path tmp, Map<String, String> testCases) throws IOException{
         int score=0;
+        int maxScore=0;
+        String output = "";
+
         for(String testCaseInput: testCases.keySet()) 
         {
-            String command = String.format("echo %s | python %s", testCaseInput, tmp);
+            String command = String.format("python %s", tmp);
 			Process process = Runtime.getRuntime().exec(command);
+
+            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
+            writer.write(testCaseInput);
+            writer.close();
 
 			BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
 			String line;
@@ -56,11 +65,26 @@ public class SubmissionService {
 				testCaseOutput+= line+"\n";
 			}
 
-            if (testCaseOutput == testCases.get(testCaseInput)) score++;
+            String actual = testCaseOutput.strip();
+            String out = testCases.get(testCaseInput).strip();
+            if (actual.equals(out)) {
+                score++;
+                output += ("Output matches test case. +1\n");
+            }
+
+            else {
+                output += ("Failed test case.\nExpect:" + out + "\nGot: " + testCaseOutput);
+            }
+
+            maxScore++;
 			reader.close();
+
         }
-		
-        return Integer.toString(score);
+        if(maxScore == 0) output = "No test cases provided\n";
+		else output += ("\nTotal Score: " + score + "/" + maxScore + "\n");
+
+
+        return output;
     }
 
     public Submission saveSubmission(String name, String srn, Long assignmentId, MultipartFile file){
@@ -75,8 +99,8 @@ public class SubmissionService {
 			iStream.close();
 			System.out.println("Saved file to " + tmp);
 
-            			
-            AssignmentTemplate assignment = restTemplate.getForObject(environment.getProperty("service_url.assignment"), AssignmentTemplate.class);
+            String url = environment.getProperty("service_url.assignment") + "/id/" + assignmentId;
+            AssignmentTemplate assignment = restTemplate.getForObject(url, AssignmentTemplate.class);
             String output = getScore(tmp, assignment.getTestCases());
 
 			Submission s = new Submission();
@@ -84,7 +108,8 @@ public class SubmissionService {
             s.setOutput(output);
             s.setSrn(srn);
             s.setAssignmentId(assignmentId);
-			return submissionRepository.save(s);
+			submissionRepository.save(s);
+            return s;
 		}
 		catch (Exception e) {
 			e.printStackTrace();

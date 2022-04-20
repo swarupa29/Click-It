@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/")
 public class AssignmentController {
-    
+
     @Autowired
     AssignmentService assignmentService;
 
@@ -51,18 +51,18 @@ public class AssignmentController {
     @GetMapping("class/{classId}")
     AssignmentList findAllAssignmentByClass(@PathVariable long classId) {
 
-        List<Assignment>a2= assignmentService.findAllAssignmentByClass(classId);
-        AssignmentList res= new AssignmentList(a2);
+        List<Assignment> a2 = assignmentService.findAllAssignmentByClass(classId);
+        AssignmentList res = new AssignmentList(a2);
         return res;
     }
 
-     @PostMapping("submit/{assignmentId}/{submissionId}/{studentId}")
-    long submit (@PathVariable long assignmentId, @PathVariable long submissionId, @PathVariable String studentId) {
+    @PostMapping("submit/{assignmentId}/{submissionId}/{studentId}")
+    long submit(@PathVariable long assignmentId, @PathVariable long submissionId, @PathVariable String studentId) {
         return assignmentService.addSubmission(assignmentId, submissionId, studentId);
     }
 
     @PostMapping("add-test-case/")
-    ResponseEntity<String> addTestCase( @RequestBody String reqBody) throws org.json.simple.parser.ParseException {
+    ResponseEntity<String> addTestCase(@RequestBody String reqBody) throws org.json.simple.parser.ParseException {
         JSONObject body = (JSONObject) new JSONParser().parse(reqBody);
         Long assignmentId = (Long) body.get("assignmentId");
         String input = (String) body.get("input");
@@ -70,7 +70,7 @@ public class AssignmentController {
 
         if (assignmentService.addTestCase(assignmentId, input, output))
             return new ResponseEntity<String>("Added new test case!", HttpStatus.OK);
-        else 
+        else
             return new ResponseEntity<String>("Failed to add test case", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
