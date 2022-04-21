@@ -56,6 +56,39 @@
       "projectName": "assignment",
       "args": "",
       "envFile": "${workspaceFolder}/.env"
+    },
+    {
+      "type": "java",
+      "name": "Spring Boot-ClassroomApplication<classroom>",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "console": "internalConsole",
+      "mainClass": "com.yae.classroom.ClassroomApplication",
+      "projectName": "classroom",
+      "args": "",
+      "envFile": "${workspaceFolder}/.env"
+    },
+    {
+      "type": "java",
+      "name": "Spring Boot-FrontendApplication<frontend>",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "console": "internalConsole",
+      "mainClass": "com.yae.frontend.FrontendApplication",
+      "projectName": "frontend",
+      "args": "",
+      "envFile": "${workspaceFolder}/.env"
+    },
+    {
+      "type": "java",
+      "name": "Spring Boot-TeacherApplication<teacher>",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "console": "internalConsole",
+      "mainClass": "com.yae.teacher.TeacherApplication",
+      "projectName": "teacher",
+      "args": "",
+      "envFile": "${workspaceFolder}/.env"
     }
   ]
 }

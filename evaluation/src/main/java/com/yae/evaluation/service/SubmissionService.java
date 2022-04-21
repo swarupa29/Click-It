@@ -108,7 +108,10 @@ public class SubmissionService {
             s.setOutput(output);
             s.setSrn(srn);
             s.setAssignmentId(assignmentId);
-			submissionRepository.save(s);
+			s = submissionRepository.save(s);
+
+            restTemplate.postForObject(url + "/" + assignmentId
+            + "/" + s.getId() + "/" + srn , 1, Long.class);
             return s;
 		}
 		catch (Exception e) {

@@ -56,21 +56,21 @@ public class FrontendService {
 
     private final RestTemplate restTemplate = new RestTemplate();
 
-    public ResponseEntity<Integer> postForObject(MultipartFile file) {
+    // public ResponseEntity<Integer> postForObject(MultipartFile file) {
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-
-
-
-        MultiValueMap<String,Object> map=new LinkedMultiValueMap<>();
-        HttpEntity<MultiValueMap<String,Object>> entity = new HttpEntity<MultiValueMap<String,Object>>(map,headers);
+    //     HttpHeaders headers = new HttpHeaders();
+    //     headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
 
-        String url="https://localhost:5000";
-        System.out.println("here");
-        return restTemplate.postForEntity(url, entity, Integer.class);
-    }
+
+    //     MultiValueMap<String,Object> map=new LinkedMultiValueMap<>();
+    //     HttpEntity<MultiValueMap<String,Object>> entity = new HttpEntity<MultiValueMap<String,Object>>(map,headers);
+
+
+    //     String url="http://localhost:5000/submit";
+    //     System.out.println("here");
+    //     return restTemplate.postForEntity(url, entity, Integer.class);
+    // }
      
 
     public String signup(String name,String email,String srn, String password,String usertype )
@@ -382,8 +382,7 @@ public class FrontendService {
         //String output = submissionService.saveSubmission(file);
 
         //Submission s=new Submission(file);
-        ResponseEntity<Integer> mark;
-        mark = postForObject(file);
+
         /*
         String output="Code files have been submitted succesfully";
         java.util.List<Assignment> a = assignmentModel.getAllAssignments();
