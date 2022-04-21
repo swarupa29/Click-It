@@ -87,11 +87,11 @@ public class SubmissionService {
         return output;
     }
 
-    public Submission saveSubmission(String name, String srn, Long assignmentId, MultipartFile file){
+    public Submission saveSubmission(String srn, Long assignmentId, MultipartFile file){
         
         try {
             InputStream iStream = file.getInputStream();
-			System.out.println(String.format("Name:%s\nSRN:%s\n", name, srn));
+			//System.out.println(String.format("Name:%s\nSRN:%s\n", name, srn));
 
 
 			Path tmp = Files.createTempFile(srn, ".py");
@@ -99,18 +99,19 @@ public class SubmissionService {
 			iStream.close();
 			System.out.println("Saved file to " + tmp);
 
-            String url = environment.getProperty("service_url.assignment") + "/id/" + assignmentId;
-            AssignmentTemplate assignment = restTemplate.getForObject(url, AssignmentTemplate.class);
+            String url = environment.getProperty("service_url.assignment") ;
+            AssignmentTemplate assignment = restTemplate.getForObject(url+ "/id/" + assignmentId, AssignmentTemplate.class);
+            System.out.println(assignment.getTestCases());
             String output = getScore(tmp, assignment.getTestCases());
 
 			Submission s = new Submission();
-            s.setName(name);
+            //s.setName(name);
             s.setOutput(output);
             s.setSrn(srn);
             s.setAssignmentId(assignmentId);
 			s = submissionRepository.save(s);
 
-            restTemplate.postForObject(url + "/" + assignmentId
+            restTemplate.postForObject(url + "/submit/" + assignmentId
             + "/" + s.getId() + "/" + srn , 1, Long.class);
             return s;
 		}

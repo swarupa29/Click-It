@@ -17,11 +17,11 @@
         <div class="container d-flex align-items-center min-vh-100">
         <div class="assignment-card ">
             <div class="card d-flex " >
-                <div class="card-body">
-                    <h5 class="card-title" style="padding:20px; font-size:2em" th:text="${title}"></h5>
-                    <h6 class="card-subtitle mb-2 text-muted" style="padding-left:20px; font-size:1.5em" th:text="${deadline}"></h6>
+                <div class="card-body" th:each="assignment : ${assignment}">
+                    <h5 class="card-title" style="padding:20px; font-size:2em" th:text="${assignment.assignmentTitle}"></h5>
+                    <h6 class="card-subtitle mb-2 text-muted" style="padding-left:20px; font-size:1.5em" th:text="${assignment.deadlineDate}"></h6>
                     <hr>
-                    <p class="card-text" style="padding:30px;font-size:1.3em" th:text="${description}"></p>
+                    <p class="card-text" style="padding:30px;font-size:1.3em" th:text="${assignment.assignmentDescription}"></p>
                     <hr>
                     <br/>
                     <form action="submit" method="post" enctype="multipart/form-data" style="padding:20px;">
@@ -29,7 +29,6 @@
                         <input type="file" name="file" id="file"/>
                         <input class="btn btn-primary" type="submit" value="Upload" >
 		            </form>
-                    <h4 th:text="${result}"></h4>
                     <div>
                         <h3>Results: </h3>
                         <h3 class="row" th:text="${marks}"></h3>

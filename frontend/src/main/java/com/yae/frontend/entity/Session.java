@@ -21,6 +21,7 @@ public class Session {
     String name;
     String email;
     Long classId;
+    Long assId;
     Boolean isStudent;
     @ElementCollection
     Set<Long> classIds;

@@ -26,7 +26,6 @@
                             <ul class="assign d-grid gap-4" th:each="submission : ${submission}">
                                 <ul class="list-group list-group-horizontal assignment-card" >
                                     <li class="list-group-item topic" th:text="${submission.srn}"></li>
-                                    <li class="list-group-item topic" th:text="${submission.name}"></li>
                                     <li class="list-group-item dl" th:text="${submission.output}"></li>
                                 </ul>                        
                             </ul>

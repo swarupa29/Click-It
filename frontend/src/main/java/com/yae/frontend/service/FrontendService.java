@@ -31,6 +31,7 @@ import com.yae.frontend.templates.Teacher;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -365,40 +366,84 @@ public class FrontendService {
     }
 
 
-    public String expandAssignment(String title, String description, String deadline,Model model)
+    public String expandAssignment(Long aid,int submitted,Model model,HttpServletRequest request)
     {
         //get assignment files from assignment Service
+        Cookie [] cookies = request.getCookies();
 
         //assignmentModel.saveAssignment(a);
-        model.addAttribute("result","");
-        model.addAttribute("marks","NA");
+        System.out.println(submitted);
+        //System.out.println(submitted.getclass());
+        
+            for (Cookie cookie : cookies) {
+                if ("sessionId".equals(cookie.getName())) {
+                    String sessionId = cookie.getValue();
+                    Session session = sessionRepository.findSessionById(Long.parseLong(sessionId));
+                    String srn=session.getUserId();
+                    session.setAssId(aid);
+                    sessionRepository.save(session);
+                    Assignment a2 = restTemplate.getForObject(environment.getProperty("service_url.assignment")+"/id/"+aid, Assignment.class);
+                    System.out.println("inside expand assignment");
+                    System.out.println(a2.getAssignmentTitle());
+                    model.addAttribute("assignment",a2);
+                    if(submitted==1)
+                    {
+                        Long subid=a2.getSubmissions().get(srn);
+                        Submission s = restTemplate.getForObject(environment.getProperty("service_url.evaluation")+"/id/"+subid, Submission.class);
+                        model.addAttribute("marks",s.getOutput());
+                    }
+                    else{
 
+                        model.addAttribute("marks","");
+                    }
+            }
+        }
+        
         return "assignment";
     }
 
-    public String submitAssignment(MultipartFile file, Model model)
+    public void submitAssignment(MultipartFile file, Model model,HttpServletRequest request,HttpServletResponse response) throws IOException
     {
-        //make call to the ms to submit the file
-        //String output = submissionService.saveSubmission(file);
+        Cookie [] cookies = request.getCookies();
+        for (Cookie cookie : cookies) {
+            System.out.println("inside submit assignment");
+            System.out.println(new String(file.getBytes()));
+            if ("sessionId".equals(cookie.getName())) {
+                String sessionId = cookie.getValue();
+                Session session = sessionRepository.findSessionById(Long.parseLong(sessionId));
+                String srn=session.getUserId();
+                Long aId=session.getAssId();
+                HttpHeaders headers = new HttpHeaders();
+                headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
-        //Submission s=new Submission(file);
+                MultiValueMap<String, String> fileMap = new LinkedMultiValueMap<>();
+                ContentDisposition contentDisposition = ContentDisposition
+                .builder("form-data")
+                .name("file")
+                .filename("test.py")
+                .build();
+                fileMap.add(HttpHeaders.CONTENT_DISPOSITION, contentDisposition.toString());
+                HttpEntity<byte[]> fileEntity = new HttpEntity<>(file.getBytes(), fileMap);
 
-        /*
-        String output="Code files have been submitted succesfully";
-        java.util.List<Assignment> a = assignmentModel.getAllAssignments();
-        model.addAttribute("title",a.get(0).getTitle());
-        model.addAttribute("deadline",a.get(0).getDeadline());
-        model.addAttribute("description",a.get(0).getDescription());
-        model.addAttribute("result", output);
-        System.out.println("HERE!");
+                MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+                System.out.println("before added body");
+                body.add("file",fileEntity);
+                body.add("srn",srn);
+                body.add("assignmentId",aId);
+                System.out.println("added body");
+                HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
+                Submission s = restTemplate.postForObject(environment.getProperty("service_url.evaluation")+"/submit", requestEntity, Submission.class);
+                model.addAttribute("marks",s.getOutput());
+                System.out.println("got marks");
+                System.out.println(s.getOutput());
+                response.addHeader("aid", aId.toString());
+                response.addHeader("submitted", "1");
+                System.out.println("before redir");
+                response.sendRedirect(environment.getProperty("service_url.frontend")+"/expandAssignment");
 
-        //mark=get from evalv service
-        //int mark=15;
+            }
+        }
 
-        model.addAttribute("marks",mark.getBody());
-
-        */
-        return "assignment";
     }
 
     public String changeClass(HttpServletRequest request,HttpServletResponse response,Long id) throws IOException{
@@ -459,15 +504,25 @@ public class FrontendService {
         int classid=Integer.parseInt(body.get("classid"));
         Map<String,String> tc = new HashMap<String,String>();
         int index = 0;
+        String ip="",op="";
         for (String key : body.keySet()) {
+
+            //to be changed    {input:output}
             if (index++ < 4 )
              {continue; }
-            //if(key.startsWith("input"))
-            tc.put(key, body.get(key));
+            if(key.startsWith("input"))
+                ip=body.get(key);
+            else{
+                op=body.get(key);
+                tc.put(ip,op);
+            }
+            //tc.put(key, body.get(key));
             //else if(key.startsWith("output"))
              //   tc.put(key, body.get(key));
    
         }
+        System.out.println("added tc or not insidde add ass");
+        System.out.println(tc);
         Assignment a = new Assignment();
         a.setAssignmentTitle(title);
         a.setAssignmentDescription(desc);
@@ -476,6 +531,8 @@ public class FrontendService {
         a.setTestCases(tc);
 
         Assignment a2=restTemplate.postForObject(environment.getProperty("service_url.assignment")+"/save", a, Assignment.class);
+        System.out.println(a2.getId());
+        System.out.println(a2.getTestCases());
         response.sendRedirect(environment.getProperty("service_url.frontend")+"/teacher");
         return "Success";
     }

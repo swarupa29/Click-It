@@ -117,22 +117,21 @@ public class FrontendController {
     // }
 
     @GetMapping(value="/expandAssignment")
-    public String expandAssignment(@ModelAttribute("title") String title, @ModelAttribute("description") String description,
-     @ModelAttribute("deadline") String deadline,Model model)
+    public String expandAssignment(@ModelAttribute("aid") Long aid,@ModelAttribute("submitted") int submitted,Model model,HttpServletRequest request)
     {
 
-        return service.expandAssignment(title, description,deadline,model);
+        return service.expandAssignment(aid,submitted,model,request);
        
     }
 
 
     @PostMapping(value="/submit", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    String Submission(
+    public void Submission(
         @RequestParam("file") MultipartFile file,
-        Model model)
+        Model model,HttpServletRequest request,HttpServletResponse response) throws IOException
     {    
 
-       return service.submitAssignment(file,model);
+       service.submitAssignment(file,model,request,response);
         
     } 
 

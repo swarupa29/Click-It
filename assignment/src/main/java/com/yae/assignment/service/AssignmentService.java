@@ -34,7 +34,7 @@ public class AssignmentService {
         long teacher = s.getTeacher();
         long classAssigned = s.getClassAssigned();
         Map<String, Long> submissions = new HashMap<String, Long>();
-        Map<String, String> testCases = new HashMap<>();
+        Map<String, String> testCases = s.getTestCases();
 
         Assignment assignment = new Assignment();
         assignment.setAssignmentTitle(assignmentTitle);

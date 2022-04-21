@@ -36,15 +36,14 @@ public class SubmissionController {
     }
 
     @ResponseBody
-    @PostMapping(value="/submit", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PostMapping(value="/submit" /*,consumes = {MediaType.MULTIPART_FORM_DATA_VALUE}*/)
     Submission saveSubmission(
         @RequestParam("assignmentId") Long aId,
-        @RequestParam("name") String name,
         @RequestParam("srn") String srn,
         @RequestParam("file") MultipartFile file)
     {    
 
-        Submission submission = submissionService.saveSubmission(name, srn, aId, file);
+        Submission submission = submissionService.saveSubmission(srn, aId, file);
 
         // Request for assignment microservice
         String url = String.format("http://localhost:7000/submit/%d/%d/%s", submission.assignmentId, submission.id, submission.srn);
