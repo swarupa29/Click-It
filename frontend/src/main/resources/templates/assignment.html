@@ -24,7 +24,7 @@
                     <p class="card-text" style="padding:30px;font-size:1.3em" th:text="${assignment.assignmentDescription}"></p>
                     <hr>
                     <br/>
-                    <form action="submit" method="post" enctype="multipart/form-data" style="padding:20px;">
+                    <form action="http://localhost:8080/submit" method="post" enctype="multipart/form-data" style="padding:20px;">
                         <label for="file" style="padding-left:20px;"><h3>Submit Code files</h3> </label>
                         <input type="file" name="file" id="file"/>
                         <input class="btn btn-primary" type="submit" value="Upload" >

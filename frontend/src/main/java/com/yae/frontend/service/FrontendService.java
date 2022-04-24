@@ -366,11 +366,12 @@ public class FrontendService {
     }
 
 
-    public String expandAssignment(Long aid,int submitted,Model model,HttpServletRequest request)
+    public String expandAssignment(String a,String sub,Model model,HttpServletRequest request)
     {
         //get assignment files from assignment Service
         Cookie [] cookies = request.getCookies();
-
+        Long aid=Long.parseLong(a);
+        int submitted=Integer.parseInt(sub);
         //assignmentModel.saveAssignment(a);
         System.out.println(submitted);
         //System.out.println(submitted.getclass());
@@ -389,7 +390,7 @@ public class FrontendService {
                     if(submitted==1)
                     {
                         Long subid=a2.getSubmissions().get(srn);
-                        Submission s = restTemplate.getForObject(environment.getProperty("service_url.evaluation")+"/id/"+subid, Submission.class);
+                        Submission s = restTemplate.getForObject(environment.getProperty("service_url.evaluation")+"/"+subid, Submission.class);
                         model.addAttribute("marks",s.getOutput());
                     }
                     else{
@@ -436,10 +437,10 @@ public class FrontendService {
                 model.addAttribute("marks",s.getOutput());
                 System.out.println("got marks");
                 System.out.println(s.getOutput());
-                response.addHeader("aid", aId.toString());
-                response.addHeader("submitted", "1");
+                //response.addHeader("aid", aId.toString());
+                //response.addHeader("submitted", "1");
                 System.out.println("before redir");
-                response.sendRedirect(environment.getProperty("service_url.frontend")+"/expandAssignment");
+                response.sendRedirect(environment.getProperty("service_url.frontend")+"/expandAssignment/"+aId+"/1");
 
             }
         }
@@ -532,6 +533,7 @@ public class FrontendService {
 
         Assignment a2=restTemplate.postForObject(environment.getProperty("service_url.assignment")+"/save", a, Assignment.class);
         System.out.println(a2.getId());
+
         System.out.println(a2.getTestCases());
         response.sendRedirect(environment.getProperty("service_url.frontend")+"/teacher");
         return "Success";

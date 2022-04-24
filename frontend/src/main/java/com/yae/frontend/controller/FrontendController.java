@@ -1,6 +1,5 @@
 package com.yae.frontend.controller;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.Map;
@@ -9,7 +8,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.yae.frontend.service.FrontendService;
-import com.yae.frontend.templates.Assignment;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -18,8 +16,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.Mapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
@@ -116,14 +117,21 @@ public class FrontendController {
     //     return "index";
     // }
 
-    @GetMapping(value="/expandAssignment")
-    public String expandAssignment(@ModelAttribute("aid") Long aid,@ModelAttribute("submitted") int submitted,Model model,HttpServletRequest request)
+    @PostMapping(value="/expandAssignment/{aid}/{submitted}")
+    public String expandAssignmentPost(@PathVariable("aid") String aid,@PathVariable("submitted") String submitted,Model model,HttpServletRequest request)
     {
 
         return service.expandAssignment(aid,submitted,model,request);
        
     }
 
+    @GetMapping(value="/expandAssignment/{aid}/{submitted}")
+    public String expandAssignmentGet(@PathVariable("aid") String aid,@PathVariable("submitted") String submitted,Model model,HttpServletRequest request)
+    {
+
+        return service.expandAssignment(aid,submitted,model,request);
+       
+    }
 
     @PostMapping(value="/submit", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public void Submission(
