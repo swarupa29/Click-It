@@ -541,10 +541,11 @@ public class FrontendService {
 
     public String expandAssignmentTeacher(Long id,Model model){
 
+        System.out.println(environment.getProperty("service_url.assignment")+"/id/"+id);
         Assignment a = restTemplate.getForObject(environment.getProperty("service_url.assignment")+"/id/"+id, Assignment.class);
         Map<String, Long> submissions= a.getSubmissions();
         List<Submission> sublist = new ArrayList<Submission>();
-
+        System.out.println("submissions");
         for(String key : submissions.keySet()){
             sublist.add(getSubmission(submissions.get(key)));
         }
@@ -556,7 +557,7 @@ public class FrontendService {
 
     public Submission getSubmission(Long id)
     {
-        return restTemplate.getForObject(environment.getProperty("service_url.assignment")+ "/" + id, Submission.class);
+        return restTemplate.getForObject(environment.getProperty("service_url.evaluation")+ "/" + id, Submission.class);
 
     }
 
