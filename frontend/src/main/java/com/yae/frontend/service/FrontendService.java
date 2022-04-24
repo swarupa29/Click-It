@@ -11,7 +11,6 @@ import java.util.HashMap;
 // import java.net.http.HttpRequest;
 // import java.net.http.HttpResponse;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -22,6 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.yae.frontend.entity.Session;
 import com.yae.frontend.repository.SessionRepository;
+import com.yae.frontend.request_builder.RequestBuilder;
 import com.yae.frontend.templates.Assignment;
 import com.yae.frontend.templates.AssignmentList;
 import com.yae.frontend.templates.Classroom;
@@ -43,7 +43,6 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
-import lombok.NoArgsConstructor;
 import net.minidev.json.JSONObject;
 
 @Service
@@ -57,25 +56,13 @@ public class FrontendService {
 
     private final RestTemplate restTemplate = new RestTemplate();
 
-    // public ResponseEntity<Integer> postForObject(MultipartFile file) {
-
-    //     HttpHeaders headers = new HttpHeaders();
-    //     headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-
-
-
-    //     MultiValueMap<String,Object> map=new LinkedMultiValueMap<>();
-    //     HttpEntity<MultiValueMap<String,Object>> entity = new HttpEntity<MultiValueMap<String,Object>>(map,headers);
-
-
-    //     String url="http://localhost:5000/submit";
-    //     System.out.println("here");
-    //     return restTemplate.postForEntity(url, entity, Integer.class);
-    // }
-     
 
     public String signup(String name,String email,String srn, String password,String usertype )
     {
+        RequestBuilder builder = new RequestBuilder(restTemplate);
+        
+        builder.setMethod("POST");
+
         if(usertype.equals("student"))
         {
             Student student = new Student();
@@ -84,7 +71,13 @@ public class FrontendService {
             student.setPassword(password);
             student.setId(srn);
 
-            restTemplate.postForObject(environment.getProperty("service_url.student")+"/save",student,Student.class);
+            
+
+            builder.setUrl(environment.getProperty("service_url.student")+"/save")
+            .setBody(student)
+            .forTemplate(Student.class);
+
+
         }
         else
         {
@@ -93,10 +86,15 @@ public class FrontendService {
             teacher.setEmail(email);
             teacher.setPassword(password);
             teacher.setId(srn);
-            restTemplate.postForObject(environment.getProperty("service_url.teacher")+"/save",teacher,Teacher.class);
+
+
+            builder.setUrl(environment.getProperty("service_url.teacher")+"/save")
+            .setBody(teacher)
+            .forTemplate(Teacher.class);
 
         }
 
+        builder.build().send();
         return "login";
     }
       
@@ -358,7 +356,7 @@ public class FrontendService {
         classJoinReq.put("classId", classId);
         
         HttpEntity<String> request = new HttpEntity<>(classJoinReq.toJSONString());
-
+        
         response.sendRedirect(environment.getProperty("service_url.frontend"));
         return restTemplate.postForEntity(environment.getProperty("service_url.student")+"/join", request, String.class);
 
