@@ -556,7 +556,7 @@ public class FrontendService {
 
     public Submission getSubmission(Long id)
     {
-        return restTemplate.getForObject(environment.getProperty("service_url.assignment")+id, Submission.class);
+        return restTemplate.getForObject(environment.getProperty("service_url.assignment")+ "/" + id, Submission.class);
 
     }
 
