@@ -1,6 +1,22 @@
-# YetAnotherEdmodo
+# ClickIt
+## Introduction
+The project is a submission platform built using the microservices architecture in springboot. We have 6 microservices
+ * Student
+ * Teacher
+ * Classroom
+ * Assignment
+ * Evaluation
+ * Frontend
+ Users can signup and login using the unique Id. Teachers can create classes and create assignments with details, assign it to a class and add test cases as well. Teachers can then view resuts of all students who submitted the assignments.
+ Student can join classes, view assignments and submit them to view scores.
+ The evaluation service will use the test cases and automatically evaulate to return a result.
+
 
 ## Requirements
+ * Springboot
+ * Postgres
+ * Maven
+ * JAVA
 
 ### Expected Interaction  b/w CLI/frontend and Evaluation-Microservice
 
