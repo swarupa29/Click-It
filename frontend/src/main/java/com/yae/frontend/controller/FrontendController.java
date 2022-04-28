@@ -76,44 +76,6 @@ public class FrontendController {
         return "error";
     }
 
-    // @GetMapping("/index")
-    // public String showList(Model model) {
-    //     //String urlstr="http://localhost:8080/GetAllClasses";
-    //     String desc="this is description of an assignment that has been made temporary";
-        
-    //             /*
-    //             HttpURLConnection con = (HttpURLConnection) url.openConnection();
-    //             con.setRequestMethod("GET");
-    //             BufferedReader in = new BufferedReader(
-    //             new InputStreamReader(con.getInputStream()));
-    //             String inputLine;
-
-    //             StringBuffer response = new StringBuffer();
-
-    //             while ((inputLine = in.readLine()) != null) {
-    //                 response.append(inputLine);
-    //             }
-    //             in.close();
-    //             System.out.println(response.toString());
-    //             */
-
-    //     //testing 
-    //     ClassTemplate response1=new ClassTemplate("Class a");
-    //     ClassTemplate response2=new ClassTemplate("Class b");
-    //     List<ClassTemplate> lst= new ArrayList<ClassTemplate>();
-    //     lst.add(response1);
-    //     lst.add(response2);
-
-    //     AssignmentTemplate res= new AssignmentTemplate("CD",desc,"1/4/22","class a","cd",true);
-
-    //     AssignmentTemplate res2= new AssignmentTemplate("MVC",desc,"22/4/22","class a","ooad",false);
-    //     model.addAttribute("assignment1",res2);
-    //     model.addAttribute("assignment2",res);
-
-    //     model.addAttribute("classes",lst);
-
-    //     return "index";
-    // }
 
     @PostMapping(value="/expandAssignment/{aid}/{submitted}")
     public String expandAssignmentPost(@PathVariable("aid") String aid,@PathVariable("submitted") String submitted,Model model,HttpServletRequest request)
@@ -169,8 +131,6 @@ public class FrontendController {
         //call save using class service 
         System.out.println(className);
         service.createClass(userId,className,response);
-       // teacherhome();
-        //return "teacherHome";
     }
 
 

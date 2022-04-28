@@ -299,13 +299,6 @@ public class FrontendService {
     }
 
 
-
-
-
-
-
-
-
     public List<List<Assignment>> classifyAssignments(List<Assignment> a,Session session)
     {
         List<List<Assignment>> final_list = new ArrayList<>();
